@@ -2,14 +2,14 @@
     "name": "Getting Started Example",
     "version": "1.0",
     "description": "Build an Extension!",
-    "permissions": ["activeTab", "declarativeContent", "storage"],
+    "permissions": ["activeTab", "clipboard-write", "declarativeContent", "storage"],
     "background": {
       "scripts": ["background.js"],
       "persistent": false
     },
     "content_scripts": [{
       "matches": ["https://*.github.com/*"],
-      "js": ["script.js"]
+      "js": ["script.js", "wip2.js", "focus.js"]
     }],
     "page_action": {
       "default_popup": "popup.html",
