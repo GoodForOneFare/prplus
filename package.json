@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "yarn rollup --config rollup.config.js main.ts",
-    "watch": "yarn rollup --watch --config rollup.config.js main.ts"
+    "build": "yarn rollup --config rollup.config.js app/main.ts",
+    "watch": "yarn rollup --watch --config rollup.config.js app/main.ts"
   },
   "devDependencies": {
     "@rollup/plugin-babel": "^5.0.0",

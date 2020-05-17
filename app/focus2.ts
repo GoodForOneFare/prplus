@@ -1,3 +1,8 @@
+import {
+  clearCurrentFileReviewedLines,
+  clearCurrentFileScrutinyLines,
+} from './scrutiny';
+
 const oldPalette = document.querySelector('#__prs_command_palette');
 if (oldPalette) {
   oldPalette.remove();
@@ -304,13 +309,13 @@ function generateCommands() {
     {
       text: 'Clear current file review lines',
       callback() {
-        window.__prs__shared.clearCurrentFileReviewedLines();
+        clearCurrentFileReviewedLines();
       },
     },
     {
       text: 'Clear current file scrutiny',
       callback() {
-        window.__prs__shared.clearCurrentFileScrutinyLines();
+        clearCurrentFileScrutinyLines();
       },
     },
     {

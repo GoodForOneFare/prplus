@@ -10,7 +10,7 @@
     "content_scripts": [{
       "matches": ["https://*.github.com/*"],
       "js": ["build/main.js"],
-      "css": ["global.css", "palette-styles.css", "review.css"]
+      "css": ["app/global.css", "app/palette-styles.css", "app/review.css"]
     }],
     "page_action": {
       "default_popup": "popup.html",

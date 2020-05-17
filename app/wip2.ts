@@ -1,21 +1,20 @@
-import {findCurrentFile} from './helpers';
+import {prs, ScrutinyBlock, ReviewLineSide} from './data';
+import {findCurrentFile, isFilesView} from './dom-helpers';
 
-const prs = window.localStorage.__prs
-  ? JSON.parse(window.localStorage.__prs)
-  : {};
-
-function isFilesView() {
-  return (
-    document.querySelector(
-      "nav.tabnav-tabs .tabnav-tab.selected[href*='/files']",
-    ) !== null
-  );
+interface TypeSummary {
+  type: string;
+  total: number;
+  viewed: number;
+  deleted: number;
+  open: number;
 }
+
+type Summary = Record<string, TypeSummary>;
 
 function aaa() {
   const facts = Array.from(document.querySelectorAll('.js-file .file-header'))
-    .map((header) => {
-      const file = header.closest('.js-file');
+    .map((header: HTMLElement) => {
+      const file = header.closest<HTMLElement>('.js-file');
       const type = /\b[/.]test/.test(header.dataset.path)
         ? 'test'
         : header.dataset.fileType
@@ -54,13 +53,13 @@ function aaa() {
       }
 
       return acc;
-    }, {});
+    }, {} as Summary);
 
   let factsHtml = document.querySelector('#facts');
   if (!factsHtml) {
     factsHtml = document.createElement('div');
     factsHtml.id = 'facts';
-    const defaultProgressBar = document.querySelector(
+    const defaultProgressBar = document.querySelector<HTMLElement>(
       '.pr-review-tools .diffbar-item progress-bar',
     );
     if (defaultProgressBar) {
@@ -89,71 +88,6 @@ function lineIds(trOrTd) {
 
   return Array.from(tr.querySelectorAll("[id^='diff-'")).map(({id}) => id);
 }
-
-function clearCurrentFileScrutinyLines() {
-  const fileElement = findCurrentFile();
-  if (!fileElement) {
-    return;
-  }
-
-  const prId = window.location.pathname.replace(/(.+[/]pull[/]\d+).*/, '$1');
-  const pr = prs[prId];
-  if (!pr) {
-    return;
-  }
-
-  const filePath = fileElement.querySelector('.file-header').dataset.path;
-  if (pr.files[filePath]) {
-    pr.files[filePath].scrutinyBlocks = [];
-  }
-
-  for (const reviewedElement of fileElement.querySelectorAll(
-    '.__prs--scrutinize',
-  )) {
-    reviewedElement.classList.remove(
-      '__prs--scrutinize',
-      '__prs--scrutinize--top',
-      '__prs--scrutinize--bottom',
-    );
-  }
-  window.localStorage.__prs = JSON.stringify(prs);
-}
-
-function clearCurrentFileReviewedLines() {
-  const currentStickyHeader = Array.from(
-    document.querySelectorAll(
-      '.js-file:not([data-file-user-viewed=true]) .file-header',
-    ),
-  ).find((header) => header.getBoundingClientRect().y >= 60);
-
-  if (!currentStickyHeader) {
-    return;
-  }
-
-  const prId = window.location.pathname.replace(/(.+[/]pull[/]\d+).*/, '$1');
-  const pr = prs[prId];
-  if (!pr) {
-    return;
-  }
-
-  const filePath = currentStickyHeader.dataset.path;
-  if (pr.files[filePath]) {
-    pr.files[filePath].lines = {};
-  }
-
-  const fileElement = currentStickyHeader.closest('.file');
-  for (const reviewedElement of fileElement.querySelectorAll(
-    '.prs--reviewed',
-  )) {
-    reviewedElement.classList.remove('prs--reviewed');
-  }
-  window.localStorage.__prs = JSON.stringify(prs);
-}
-
-/* eslint-disable-next-line babel/camelcase */
-window.__prs__shared = {};
-window.__prs__shared.clearCurrentFileScrutinyLines = clearCurrentFileScrutinyLines;
-window.__prs__shared.clearCurrentFileReviewedLines = clearCurrentFileReviewedLines;
 
 function updateHeader(file) {
   const [additions, deletions, reviewedAdditions, reviewedDeletions] = [
@@ -185,7 +119,7 @@ function updateHeader(file) {
       `;
 }
 
-function markScrutinizedLines(numberBoxes) {
+function markScrutinizedLines(numberBoxes: HTMLElement[]) {
   const prId = window.location.pathname.replace(/(.+[/]pull[/]\d+).*/, '$1');
   let pr = prs[prId];
   if (!pr) {
@@ -194,7 +128,7 @@ function markScrutinizedLines(numberBoxes) {
   }
 
   const file = numberBoxes[0].closest('.js-file');
-  const filePath = file.querySelector('.file-header').dataset.path;
+  const filePath = file.querySelector<HTMLElement>('.file-header').dataset.path;
   let fileInfo = pr.files[filePath];
   if (!fileInfo) {
     fileInfo = {lines: {}, scrutinyBlocks: []};
@@ -205,7 +139,10 @@ function markScrutinizedLines(numberBoxes) {
     fileInfo.scrutinyBlocks = [];
   }
 
-  const side = numberBoxes[0].id.replace(/.+([RL])\d+$/, '$1');
+  const side = numberBoxes[0].id.replace(
+    /.+([RL])\d+$/,
+    '$1',
+  ) as ReviewLineSide;
   const lineNumbers = Array.from(numberBoxes)
     .map(({id}) => id)
     .map((id) => id.replace(/.+[RL](\d+)$/, '$1'));
@@ -217,7 +154,7 @@ function markScrutinizedLines(numberBoxes) {
   updateScrutinizedUI(blockInfo);
 }
 
-function updateScrutinizedUI(blockInfo) {
+function updateScrutinizedUI(blockInfo: ScrutinyBlock) {
   const fileHeader = document.querySelector(
     `.js-file .file-header[data-path='${blockInfo.filePath}']`,
   );
@@ -241,7 +178,7 @@ function updateScrutinizedUI(blockInfo) {
   lastBox.classList.add('__prs--scrutinize--bottom');
 }
 
-function markReviewedLines(trs, options) {
+function markReviewedLines(trs: HTMLElement[], options) {
   const prId = window.location.pathname.replace(/(.+[/]pull[/]\d+).*/, '$1');
   let pr = prs[prId];
   if (!pr) {
@@ -251,7 +188,7 @@ function markReviewedLines(trs, options) {
 
   const [firstTr] = trs;
   const file = firstTr.closest('.js-file');
-  const filePath = file.querySelector('.file-header').dataset.path;
+  const filePath = file.querySelector<HTMLElement>('.file-header').dataset.path;
   let fileInfo = pr.files[filePath];
   if (!fileInfo) {
     fileInfo = {lines: {}};
@@ -284,14 +221,12 @@ document.body.addEventListener('click', (evt) => {
     return;
   }
 
-  const {target, altKey} = evt;
+  const target = evt.target as HTMLElement;
   if (
     target.classList.contains('blob-num-addition') ||
     target.classList.contains('blob-num-deletion')
   ) {
-    if (altKey) {
-      // TODO: ?
-    } else {
+    if (!evt.altKey) {
       evt.preventDefault();
       const tr = target.closest('tr');
 
@@ -305,8 +240,8 @@ document.addEventListener('mousedown', (evt) => {
   if (!evt.metaKey) {
     return;
   }
-  isDragging =
-    evt.target.tagName === 'TD' && evt.target.classList.contains('blob-num');
+  const target = evt.target as HTMLElement;
+  isDragging = target.tagName === 'TD' && target.classList.contains('blob-num');
 });
 
 document.addEventListener('mouseup', (evt) => {
@@ -320,13 +255,16 @@ document.addEventListener('mouseup', (evt) => {
   }
 
   if (evt.altKey) {
-    if (evt.target.tagName !== 'TD') {
+    const target = evt.target as HTMLElement;
+    if (target.tagName !== 'TD') {
       return;
     }
 
-    const side = evt.target.id.replace(/.+([RL])\d+$/, '$1');
+    const side = target.id.replace(/.+([RL])\d+$/, '$1');
     const numberBoxes = Array.from(
-      document.querySelectorAll(`.blob-num.selected-line[id*=${side}]`),
+      document.querySelectorAll<HTMLElement>(
+        `.blob-num.selected-line[id*=${side}]`,
+      ),
     );
 
     // const codeLines = Array.from(document.querySelectorAll('.blob-code.selected-line'));
@@ -419,7 +357,9 @@ function updateToolbar() {
 updateToolbar();
 
 (function defaltFilesTabToWhitespace() {
-  const filesTab = document.querySelector('a.tabnav-tab[href$=files]');
+  const filesTab = document.querySelector('a.tabnav-tab[href$=files]') as
+    | HTMLAnchorElement
+    | undefined;
   if (filesTab) {
     filesTab.href += '?w=1';
   }
@@ -447,7 +387,7 @@ function initializeFilesTab() {
 
   const filesObserver = new MutationObserver((mutationsList) => {
     mutationsList.forEach(({addedNodes}) => {
-      const addedFiles = Array.from(addedNodes).filter((element) =>
+      const addedFiles = Array.from(addedNodes).filter((element: HTMLElement) =>
         element.classList?.contains('js-file'),
       );
       addedFiles.forEach((addedFile) => {
