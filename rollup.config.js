@@ -1,4 +1,5 @@
 import babel from '@rollup/plugin-babel';
+import resolve from '@rollup/plugin-node-resolve';
 
 const config = {
   input: 'content_script.js',
@@ -15,6 +16,7 @@ const config = {
       ],
       extensions: ['.js', '.ts'],
     }),
+    resolve({extensions: ['.js', '.ts']}),
   ],
 };
 

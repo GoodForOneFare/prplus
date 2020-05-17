@@ -21,13 +21,15 @@ const paletteFileTypes = [
 
 function collapseAll() {
   for (const element of document.querySelectorAll('.js-file.open')) {
-    element.querySelector('[aria-expanded]').click();
+    const toggle = element.querySelector('[aria-expanded]') as HTMLElement;
+    toggle.click();
   }
 }
 
 function expandAll() {
   for (const element of document.querySelectorAll('.js-file:not(.open)')) {
-    element.querySelector('[aria-expanded]').click();
+    const toggle = element.querySelector('[aria-expanded]') as HTMLElement;
+    toggle.click();
   }
 }
 
@@ -39,7 +41,10 @@ function markRenamedFilesAsViewed() {
   );
 
   for (const renamedFile of unreviewedRenamedFiles) {
-    renamedFile.querySelector('.js-reviewed-checkbox').click();
+    const toggle = renamedFile.querySelector(
+      '.js-reviewed-checkbox',
+    ) as HTMLElement;
+    toggle.click();
   }
 }
 
@@ -50,26 +55,35 @@ function markCurrentFileAsViewed() {
     ),
   ).find((header) => header.getBoundingClientRect().y >= 60);
 
-  currentStickyHeader.querySelector('.js-reviewed-checkbox').click();
+  const toggle = currentStickyHeader.querySelector(
+    '.js-reviewed-checkbox',
+  ) as HTMLElement;
+  toggle.click();
 }
 
 function switchToSplitDiff() {
-  const checkbox = document.querySelector(
+  const checkbox: HTMLInputElement = document.querySelector(
     'input[type=radio][name=diff][value=split]:not([checked])',
   );
   if (checkbox) {
     checkbox.checked = true;
-    document.querySelector('#whitespace-cb ~ button').click();
+    const whitespaceButton: HTMLElement = document.querySelector(
+      '#whitespace-cb ~ button',
+    );
+    whitespaceButton.click();
   }
 }
 
 function switchToUnifiedDiff() {
-  const checkbox = document.querySelector(
+  const checkbox: HTMLInputElement = document.querySelector(
     'input[type=radio][name=diff][value=unified]:not([checked])',
   );
   if (checkbox) {
     checkbox.checked = true;
-    document.querySelector('#whitespace-cb ~ button').click();
+    const whitespaceButton: HTMLElement = document.querySelector(
+      '#whitespace-cb ~ button',
+    );
+    whitespaceButton.click();
   }
 }
 
@@ -77,8 +91,8 @@ function toggleWhitespace() {
   const [checkbox, submit] = document.querySelectorAll(
     '#whitespace-cb, #whitespace-cb ~ button',
   );
-  checkbox.checked = true;
-  submit.click();
+  (checkbox as HTMLInputElement).checked = true;
+  (submit as HTMLElement).click();
 }
 
 function findByExtension(...extensions) {
@@ -93,10 +107,10 @@ const fileTypes = [
   {
     match: ['viewed'],
     show() {
-      document.body.dataset.showViewed = true;
+      document.body.dataset.showViewed = 'true';
     },
     hide() {
-      document.body.dataset.showViewed = false;
+      document.body.dataset.showViewed = 'false';
     },
     find() {
       return Array.from(
@@ -107,10 +121,10 @@ const fileTypes = [
   {
     match: ['renamed'],
     show() {
-      document.body.dataset.showRenamed = true;
+      document.body.dataset.showRenamed = 'true';
     },
     hide() {
-      document.body.dataset.showRenamed = false;
+      document.body.dataset.showRenamed = 'false';
     },
     find() {
       return Array.from(document.querySelectorAll('.js-file[data-renamed]'));
@@ -119,10 +133,10 @@ const fileTypes = [
   {
     match: ['TypeScript', 'ts', 'tsx'],
     show() {
-      document.body.dataset.showTs = true;
+      document.body.dataset.showTs = 'true';
     },
     hide() {
-      document.body.dataset.showTs = false;
+      document.body.dataset.showTs = 'false';
     },
     find() {
       return findByExtension('ts', 'tsx');
@@ -131,10 +145,10 @@ const fileTypes = [
   {
     match: ['javascript', 'js', 'jsx'],
     show() {
-      document.body.dataset.showJs = true;
+      document.body.dataset.showJs = 'true';
     },
     hide() {
-      document.body.dataset.showJs = false;
+      document.body.dataset.showJs = 'false';
     },
     find() {
       return findByExtension('js', 'jsx');
@@ -143,10 +157,10 @@ const fileTypes = [
   {
     match: ['css', 'scss'],
     show() {
-      document.body.dataset.showCss = true;
+      document.body.dataset.showCss = 'true';
     },
     hide() {
-      document.body.dataset.showCss = false;
+      document.body.dataset.showCss = 'false';
     },
     find() {
       return findByExtension('css', 'scss');
@@ -155,10 +169,10 @@ const fileTypes = [
   {
     match: ['json'],
     show() {
-      document.body.dataset.showJson = true;
+      document.body.dataset.showJson = 'true';
     },
     hide() {
-      document.body.dataset.showJson = false;
+      document.body.dataset.showJson = 'false';
     },
     find() {
       return findByExtension('json');
@@ -167,10 +181,10 @@ const fileTypes = [
   {
     match: ['yml', 'yaml'],
     show() {
-      document.body.dataset.showYml = true;
+      document.body.dataset.showYml = 'true';
     },
     hide() {
-      document.body.dataset.showYml = false;
+      document.body.dataset.showYml = 'false';
     },
     find() {
       return findByExtension('yml', 'yaml');
@@ -179,10 +193,10 @@ const fileTypes = [
   {
     match: ['images'],
     show() {
-      document.body.dataset.showImages = true;
+      document.body.dataset.showImages = 'true';
     },
     hide() {
-      document.body.dataset.showImages = false;
+      document.body.dataset.showImages = 'false';
     },
     find() {
       return findByExtension('gif', 'jpg', 'jpeg', 'png', 'svg');
@@ -191,10 +205,10 @@ const fileTypes = [
   {
     match: ['graphql'],
     show() {
-      document.body.dataset.showGraphql = true;
+      document.body.dataset.showGraphql = 'true';
     },
     hide() {
-      document.body.dataset.showGraphql = false;
+      document.body.dataset.showGraphql = 'false';
     },
     find() {
       return findByExtension('graphql');
@@ -203,10 +217,10 @@ const fileTypes = [
   {
     match: 'viewed',
     show() {
-      document.body.dataset.showViewed = true;
+      document.body.dataset.showViewed = 'true';
     },
     hide() {
-      document.body.dataset.showViewed = false;
+      document.body.dataset.showViewed = 'false';
     },
     find() {
       return Array.from(
@@ -217,10 +231,10 @@ const fileTypes = [
   {
     match: 'deleted',
     show() {
-      document.body.dataset.showDeleted = true;
+      document.body.dataset.showDeleted = 'true';
     },
     hide() {
-      document.body.dataset.showDeleted = false;
+      document.body.dataset.showDeleted = 'false';
     },
     find() {
       return Array.from(
@@ -231,10 +245,10 @@ const fileTypes = [
   {
     match: 'test',
     show() {
-      document.body.dataset.showTests = true;
+      document.body.dataset.showTests = 'true';
     },
     hide() {
-      document.body.dataset.showTests = false;
+      document.body.dataset.showTests = 'false';
     },
     find() {
       return Array.from(document.querySelectorAll('.js-file[data-test]'));
@@ -253,7 +267,8 @@ function collapseFileType(fileType) {
     ?.find()
     .filter((file) => file.classList.contains('open'))
     .forEach((file) => {
-      file.querySelector('[aria-expanded]').click();
+      const toggle: HTMLInputElement = file.querySelector('[aria-expanded]');
+      toggle.click();
     });
 }
 
@@ -264,7 +279,8 @@ function expandFileType(fileType) {
     ?.find()
     .filter((file) => !file.classList.contains('open'))
     .forEach((file) => {
-      file.querySelector('[aria-expanded]').click();
+      const toggle: HTMLInputElement = file.querySelector('[aria-expanded]');
+      toggle.click();
     });
 }
 
@@ -411,10 +427,12 @@ function selectCurrentCommand() {
 }
 
 paletteInput.addEventListener('change', (evt) => {
-  if (evt.target.value !== '') {
+  const target = evt.target as HTMLInputElement;
+  if (target.value !== '') {
     selectCurrentCommand();
   }
 });
+
 paletteInput.addEventListener('keyup', (evt) => {
   if (evt.code === 'Escape') {
     // Hiding the palette will trigger a `change` event unless its input
@@ -435,7 +453,8 @@ function paletteClearSelectedCommand() {
 }
 
 paletteInput.addEventListener('input', (evt) => {
-  const matches = getMatchingCommands(evt.target.value);
+  const target = evt.target as HTMLInputElement;
+  const matches = getMatchingCommands(target.value);
   paletteClearSelectedCommand();
   currentCommand = 0;
   const commandItems = paletteList.querySelectorAll('li');

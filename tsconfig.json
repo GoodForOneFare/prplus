@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "rootDir": ".",
+    "outDir": "./build/ts",
+    "target": "ESNext",
+    "module":  "ESNext"
+  },
+  "include": ["."]
+}
