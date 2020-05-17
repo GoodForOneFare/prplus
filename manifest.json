@@ -9,7 +9,8 @@
     },
     "content_scripts": [{
       "matches": ["https://*.github.com/*"],
-      "js": ["script.js", "wip2.js", "focus.js"]
+      "js": ["build/main.js"],
+      "css": ["global.css", "palette-styles.css", "review.css"]
     }],
     "page_action": {
       "default_popup": "popup.html",

@@ -2,5 +2,14 @@
   "name": "devtools",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-babel": "^5.0.0",
+    "@shopify/babel-preset": "^23.1.0",
+    "@shopify/eslint-plugin": "^36.1.0",
+    "eslint": "^7.0.0",
+    "prettier": "^2.0.5",
+    "rollup": "^2.10.2",
+    "typescript": "^3.9.2"
+  }
 }

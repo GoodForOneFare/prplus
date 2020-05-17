@@ -1,0 +1,72 @@
+body.__prs_hide_viewed .js-file[data-file-user-viewed] {
+  display: none !important;
+}
+
+body.__prs_hide_comments #files .js-inline-comments-container {
+  display: none !important;
+}
+
+.toolbar-branch-name {
+  display: none;
+  margin-left: 0.5cm;
+}
+
+.pr-toolbar.is-stuck .toolbar-branch-name {
+  display: inline;
+}
+
+body[data-show-viewed=false] .js-file[data-file-user-viewed] {
+  display: none !important;
+}
+
+body[data-show-deleted=false] .js-file[data-file-deleted=true] {
+  display: none !important;
+}
+
+body[data-show-renamed=false] .js-file[data-renamed=true] {
+  display: none !important;
+}
+
+body[data-show-js=false] .js-file[data-file-type=".js"],
+body[data-show-js=false] .js-file[data-file-type=".jsx"] {
+  display: none !important;
+}
+
+body[data-show-ts=false] .js-file[data-file-type=".ts"],
+body[data-show-ts=false] .js-file[data-file-type=".tsx"] {
+  display: none !important;
+}
+
+body[data-show-css=false] .js-file[data-file-type=".css"],
+body[data-show-css=false] .js-file[data-file-type=".scss"] {
+  display: none !important;
+}
+
+body[data-show-json=false] .js-file[data-file-type=".json"] {
+  display: none !important;
+}
+
+body[data-show-yml=false] .js-file[data-file-type=".yml"] {
+  display: none !important;
+}
+
+body[data-show-images=false] .js-file[data-file-type=".gif"],
+body[data-show-images=false] .js-file[data-file-type=".jpg"],
+body[data-show-images=false] .js-file[data-file-type=".jpgeg"],
+body[data-show-images=false] .js-file[data-file-type=".png"],
+body[data-show-images=false] .js-file[data-file-type=".svg"] {
+  display: none !important;
+}
+
+body[data-show-graphql=false] .js-file[data-file-type=".graphql"] {
+  display: none !important;
+}
+
+body[data-show-tests=false] .js-file[data-test=true] {
+  display: none !important;
+}
+
+body[data-show-js=false][data-show-tests=true] .js-file[data-test=true],
+body[data-show-ts=false][data-show-tests=true] .js-file[data-test=true] {
+  display: inherit !important;
+}

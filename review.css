@@ -1,0 +1,56 @@
+.prs--reviewed {
+    background-color: inherit;
+  }
+
+  .blob-num-addition.prs--reviewed {
+    background-color: inherit;
+    border-right: 1px solid green;
+  }
+
+  .blob-num-deletion.prs--reviewed {
+    background-color: inherit;
+    border-right: 1px solid red;
+  }
+
+  .blob-code-addition.prs--reviewed {
+    background-color: inherit;
+    border-color: none;    
+  }
+
+  .blob-code-deletion.prs--reviewed {
+    background-color: inherit;
+    border-color: none;
+  }
+
+  .__prs--scrutinize.blob-num {
+    border-left: 2px solid red !important;
+  }
+
+  .__prs--scrutinize.__prs--scrutinize--top.blob-num {
+    border-top: 2px solid red !important;
+  }
+
+  .__prs--scrutinize.__prs--scrutinize--bottom.blob-num {
+    border-bottom: 2px solid red !important;
+  }
+
+  .__prs--scrutinize.blob-num + .blob-code {
+    border-right: 2px solid red !important;
+  }
+
+  .__prs--scrutinize.__prs--scrutinize--top.blob-num + .blob-code {
+    border-top: 2px solid red !important;
+  }
+
+  .__prs--scrutinize.__prs--scrutinize--top.blob-num + .blob-code::after {
+    border: none;
+    content: '🔺';
+    display: flex;
+    font-size: 30pt;
+    justify-content: flex-end;
+    margin: 5px;
+  }
+
+  .__prs--scrutinize.__prs--scrutinize--bottom.blob-num + .blob-code {
+    border-bottom: 2px solid red !important;
+  }
