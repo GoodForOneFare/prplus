@@ -1,7 +1,6 @@
-import {
-  clearCurrentFileReviewedLines,
-  clearCurrentFileScrutinyLines,
-} from './scrutiny';
+import {findCurrentFile} from './dom-helpers';
+import {clearCurrentFileReviewedLines} from './review';
+import {clearCurrentFileScrutinyLines} from './scrutiny';
 
 const oldPalette = document.querySelector('#__prs_command_palette');
 if (oldPalette) {
@@ -26,15 +25,13 @@ const paletteFileTypes = [
 
 function collapseAll() {
   for (const element of document.querySelectorAll('.js-file.open')) {
-    const toggle = element.querySelector('[aria-expanded]') as HTMLElement;
-    toggle.click();
+    element.querySelector<HTMLElement>('[aria-expanded]').click();
   }
 }
 
 function expandAll() {
   for (const element of document.querySelectorAll('.js-file:not(.open)')) {
-    const toggle = element.querySelector('[aria-expanded]') as HTMLElement;
-    toggle.click();
+    element.querySelector<HTMLElement>('[aria-expanded]').click();
   }
 }
 
@@ -46,28 +43,16 @@ function markRenamedFilesAsViewed() {
   );
 
   for (const renamedFile of unreviewedRenamedFiles) {
-    const toggle = renamedFile.querySelector(
-      '.js-reviewed-checkbox',
-    ) as HTMLElement;
-    toggle.click();
+    renamedFile.querySelector<HTMLElement>('.js-reviewed-checkbox').click();
   }
 }
 
 function markCurrentFileAsViewed() {
-  const currentStickyHeader = Array.from(
-    document.querySelectorAll(
-      '.js-file:not([data-file-user-viewed=true]) .file-header',
-    ),
-  ).find((header) => header.getBoundingClientRect().y >= 60);
-
-  const toggle = currentStickyHeader.querySelector(
-    '.js-reviewed-checkbox',
-  ) as HTMLElement;
-  toggle.click();
+  findCurrentFile().querySelector<HTMLElement>('.js-reviewed-checkbox').click();
 }
 
 function switchToSplitDiff() {
-  const checkbox: HTMLInputElement = document.querySelector(
+  const checkbox = document.querySelector<HTMLInputElement>(
     'input[type=radio][name=diff][value=split]:not([checked])',
   );
   if (checkbox) {
@@ -80,7 +65,7 @@ function switchToSplitDiff() {
 }
 
 function switchToUnifiedDiff() {
-  const checkbox: HTMLInputElement = document.querySelector(
+  const checkbox = document.querySelector<HTMLInputElement>(
     'input[type=radio][name=diff][value=unified]:not([checked])',
   );
   if (checkbox) {
@@ -93,11 +78,11 @@ function switchToUnifiedDiff() {
 }
 
 function toggleWhitespace() {
-  const [checkbox, submit] = document.querySelectorAll(
+  const [checkbox, submit] = document.querySelectorAll<HTMLInputElement>(
     '#whitespace-cb, #whitespace-cb ~ button',
   );
-  (checkbox as HTMLInputElement).checked = true;
-  (submit as HTMLElement).click();
+  checkbox.checked = true;
+  submit.click();
 }
 
 function findByExtension(...extensions) {
@@ -272,8 +257,7 @@ function collapseFileType(fileType) {
     ?.find()
     .filter((file) => file.classList.contains('open'))
     .forEach((file) => {
-      const toggle: HTMLInputElement = file.querySelector('[aria-expanded]');
-      toggle.click();
+      file.querySelector<HTMLInputElement>('[aria-expanded]').click();
     });
 }
 
@@ -284,14 +268,12 @@ function expandFileType(fileType) {
     ?.find()
     .filter((file) => !file.classList.contains('open'))
     .forEach((file) => {
-      const toggle: HTMLInputElement = file.querySelector('[aria-expanded]');
-      toggle.click();
+      file.querySelector<HTMLInputElement>('[aria-expanded]').click();
     });
 }
 
 function showFileType(fileType) {
-  const typeData = fileTypes.find((type) => type.match.includes(fileType));
-  typeData?.show();
+  fileTypes.find((type) => type.match.includes(fileType))?.show();
 }
 
 function hideComments() {
@@ -383,12 +365,8 @@ function generateCommands() {
   ].sort();
 }
 
-paletteList.style.overflowY = 'scroll';
-paletteList.style.height = '150px';
-
 const paletteInput = document.createElement('input');
 paletteInput.type = 'text';
-paletteInput.style.flex = '1 1 auto';
 
 let currentCommand = 0;
 function getMatchingCommands(rawFilterText) {

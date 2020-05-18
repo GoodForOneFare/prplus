@@ -10,10 +10,19 @@
   z-index: 9000;
 }
 
+#__prs_command_list {
+  overflow-y: scroll;
+  height: 150px;
+}
+
 #__prs_command_palette li.hidden{
   display: none;
 }
   
 #__prs_command_palette li.selected {
   background-color: #aaa;
+}
+
+#__prs_command_palette input {
+  flex: 1 1 auto;
 }
