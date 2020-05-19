@@ -1,6 +1,11 @@
-import {findCurrentFile} from './dom-helpers';
+import {findCurrentFile} from './file';
 import {clearCurrentFileReviewedLines} from './review';
 import {clearCurrentFileScrutinyLines} from './scrutiny';
+import {
+  switchToSplitDiff,
+  switchToUnifiedDiff,
+  toggleWhitespace,
+} from './toolbar';
 
 const oldPalette = document.querySelector('#__prs_command_palette');
 if (oldPalette) {
@@ -48,41 +53,7 @@ function markRenamedFilesAsViewed() {
 }
 
 function markCurrentFileAsViewed() {
-  findCurrentFile().querySelector<HTMLElement>('.js-reviewed-checkbox').click();
-}
-
-function switchToSplitDiff() {
-  const checkbox = document.querySelector<HTMLInputElement>(
-    'input[type=radio][name=diff][value=split]:not([checked])',
-  );
-  if (checkbox) {
-    checkbox.checked = true;
-    const whitespaceButton: HTMLElement = document.querySelector(
-      '#whitespace-cb ~ button',
-    );
-    whitespaceButton.click();
-  }
-}
-
-function switchToUnifiedDiff() {
-  const checkbox = document.querySelector<HTMLInputElement>(
-    'input[type=radio][name=diff][value=unified]:not([checked])',
-  );
-  if (checkbox) {
-    checkbox.checked = true;
-    const whitespaceButton: HTMLElement = document.querySelector(
-      '#whitespace-cb ~ button',
-    );
-    whitespaceButton.click();
-  }
-}
-
-function toggleWhitespace() {
-  const [checkbox, submit] = document.querySelectorAll<HTMLInputElement>(
-    '#whitespace-cb, #whitespace-cb ~ button',
-  );
-  checkbox.checked = true;
-  submit.click();
+  findCurrentFile().markAsViewed();
 }
 
 function findByExtension(...extensions) {

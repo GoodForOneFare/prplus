@@ -1,9 +1,8 @@
 import {prs, ScrutinyBlock, ReviewLineSide} from './data';
 import {isFilesView} from './dom-helpers';
-import {updateHeader} from './file';
-import {markReviewedLines, unhighlightReviewedLines} from './review';
+import {updateHeader, findFile} from './file';
 import {updateToolbarSummary} from './toolbar';
-import {initialScrutinizedLines, markScrutinizedLines} from './scrutiny';
+import {markScrutinizedLines} from './scrutiny';
 
 document.body.removeEventListener('click', updateToolbarSummary);
 document.body.addEventListener('click', () => {
@@ -11,7 +10,7 @@ document.body.addEventListener('click', () => {
 });
 
 updateToolbarSummary();
-initialScrutinizedLines();
+// initialScrutinizedLines();
 
 document.body.addEventListener('click', (evt) => {
   if (!evt.metaKey) {
@@ -26,8 +25,7 @@ document.body.addEventListener('click', (evt) => {
     if (!evt.altKey) {
       evt.preventDefault();
       const tr = target.closest('tr');
-
-      markReviewedLines([tr], {updateUI: true});
+      findFile(tr).markReviewedLines([tr], {updateUI: true});
       updateHeader(tr.closest('.js-file'));
     }
   }
@@ -65,13 +63,15 @@ document.addEventListener('mouseup', (evt) => {
       ),
     );
 
-    markScrutinizedLines(numberBoxes);
+    const file = findFile(numberBoxes[0]);
+    file.markScrutinizedLines(numberBoxes);
   } else {
     const trs = Array.from(
       document.querySelectorAll('.blob-num.selected-line'),
     ).map((line) => line.closest('tr'));
 
-    markReviewedLines(trs, {updateUI: true});
+    const file = findFile(trs[0]);
+    file.markReviewedLines(trs, {updateUI: true});
   }
 });
 
@@ -111,25 +111,30 @@ updateToolbar();
   }
 })();
 
-function initializeFile(fileElement) {
-  const header = fileElement.querySelector('.file-header');
-  const filePath = header.dataset.path;
-  if (filePath.match(/([/]tests?[/]|[/]fixtures[/]|\.tests?\.[jt]s)/)) {
-    fileElement.dataset.test = true;
-  }
+// function initializeFile(fileElement) {
+//   const header = fileElement.querySelector('.file-header');
+//   const filePath = header.dataset.path;
+//   if (filePath.match(/([/]tests?[/]|[/]fixtures[/]|\.tests?\.[jt]s)/)) {
+//     fileElement.dataset.test = true;
+//   }
 
-  if (fileElement.querySelector('.js-file-content .data.empty')) {
-    fileElement.dataset.renamed = true;
-  }
-}
+//   if (fileElement.querySelector('.js-file-content .data.empty')) {
+//     fileElement.dataset.renamed = true;
+//   }
+// }
 
 function initializeFilesTab() {
   if (!isFilesView()) {
     return;
   }
 
+  const initialFiles = document.querySelectorAll('.js-file');
+  initialFiles.forEach((addedFile) => {
+    initializeFile(addedFile);
+  });
+
   updateToolbarSummary();
-  unhighlightReviewedLines();
+  // unhighlightReviewedLines();
 
   const filesObserver = new MutationObserver((mutationsList) => {
     mutationsList.forEach(({addedNodes}) => {
@@ -142,8 +147,8 @@ function initializeFilesTab() {
     });
 
     updateToolbarSummary();
-    initialScrutinizedLines();
-    unhighlightReviewedLines();
+    // initialScrutinizedLines();
+    // unhighlightReviewedLines();
   });
 
   for (const filesContainer of document.querySelectorAll(

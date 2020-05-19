@@ -8,6 +8,40 @@ interface TypeSummary {
 
 type Summary = Record<string, TypeSummary>;
 
+export function switchToSplitDiff() {
+  const checkbox = document.querySelector<HTMLInputElement>(
+    'input[type=radio][name=diff][value=split]:not([checked])',
+  );
+  if (checkbox) {
+    checkbox.checked = true;
+    const whitespaceButton: HTMLElement = document.querySelector(
+      '#whitespace-cb ~ button',
+    );
+    whitespaceButton.click();
+  }
+}
+
+export function switchToUnifiedDiff() {
+  const checkbox = document.querySelector<HTMLInputElement>(
+    'input[type=radio][name=diff][value=unified]:not([checked])',
+  );
+  if (checkbox) {
+    checkbox.checked = true;
+    const whitespaceButton: HTMLElement = document.querySelector(
+      '#whitespace-cb ~ button',
+    );
+    whitespaceButton.click();
+  }
+}
+
+export function toggleWhitespace() {
+  const [checkbox, submit] = document.querySelectorAll<HTMLInputElement>(
+    '#whitespace-cb, #whitespace-cb ~ button',
+  );
+  checkbox.checked = true;
+  submit.click();
+}
+
 export function updateToolbarSummary() {
   const facts = Array.from(document.querySelectorAll('.js-file .file-header'))
     .map((header: HTMLElement) => {
