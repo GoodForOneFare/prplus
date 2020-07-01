@@ -1,8 +1,6 @@
-import {prs, ScrutinyBlock, ReviewLineSide} from './data';
 import {isFilesView} from './dom-helpers';
-import {updateHeader, findFile} from './file';
+import {findFile, initializeFile, updateHeader} from './file';
 import {updateToolbarSummary} from './toolbar';
-import {markScrutinizedLines} from './scrutiny';
 
 document.body.removeEventListener('click', updateToolbarSummary);
 document.body.addEventListener('click', () => {
@@ -130,7 +128,7 @@ function initializeFilesTab() {
 
   const initialFiles = document.querySelectorAll('.js-file');
   initialFiles.forEach((addedFile) => {
-    initializeFile(addedFile);
+    initializeFile(addedFile as HTMLElement);
   });
 
   updateToolbarSummary();
@@ -142,7 +140,7 @@ function initializeFilesTab() {
         element.classList?.contains('js-file'),
       );
       addedFiles.forEach((addedFile) => {
-        initializeFile(addedFile);
+        initializeFile(addedFile as HTMLElement);
       });
     });
 
@@ -169,7 +167,7 @@ const tabObserver = new MutationObserver(() => {
     return;
   }
   for (const fileElement of document.querySelectorAll('.js-file')) {
-    initializeFile(fileElement);
+    initializeFile(fileElement as HTMLElement);
   }
 
   initializeFilesTab();
@@ -181,7 +179,7 @@ tabObserver.observe(document.querySelector('main'), {
 });
 
 for (const fileElement of document.querySelectorAll('.js-file')) {
-  initializeFile(fileElement);
+  initializeFile(fileElement as HTMLElement);
 }
 
 initializeFilesTab();

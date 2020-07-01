@@ -1,8 +1,8 @@
   {
-    "name": "Getting Started Example",
+    "name": "Github PR+",
     "version": "1.0",
-    "description": "Build an Extension!",
-    "permissions": ["activeTab", "clipboard-write", "declarativeContent", "storage"],
+    "description": "Enhanced Github PR reviews",
+    "permissions": ["activeTab", "clipboardWrite", "declarativeContent", "storage"],
     "background": {
       "scripts": ["background.js"],
       "persistent": false

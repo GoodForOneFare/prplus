@@ -1,4 +1,4 @@
-import {findFile, findCurrentFile} from './file';
+import {findCurrentFile} from './file';
 
 export function clearCurrentFileScrutinyLines() {
   findCurrentFile()?.clearScrutinyLines();

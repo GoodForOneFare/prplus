@@ -21,11 +21,11 @@ export function initializeFile(fileElement: HTMLElement) {
   files[file.path] = file;
 
   if (file.isTest) {
-    fileElement.dataset.test = true;
+    fileElement.dataset.test = 'true';
   }
 
   if (fileElement.querySelector('.js-file-content .data.empty')) {
-    fileElement.dataset.renamed = true;
+    fileElement.dataset.renamed = 'true';
   }
 
   file.unhighlightReviewedLines();
@@ -36,8 +36,10 @@ export function initializeFile(fileElement: HTMLElement) {
 
 export function findCurrentFile() {
   const fileElement = findCurrentFileDOM();
+  console.log('@@findCurrentFile', fileElement);
+  console.log('@@findCurrentFile', files);
   return files[
-    fileElement.querySelector<HTMLElement>('.file-header').dataset.filePath
+    fileElement.querySelector<HTMLElement>('.file-header').dataset.path
   ];
 }
 
@@ -45,7 +47,9 @@ export function findFile(element: HTMLElement) {
   const header = element
     .closest('.js-file')
     .querySelector<HTMLElement>('.file-header');
-  return files[header.dataset.filePath];
+  console.log('@@files', files);
+  console.log('@@filePath', header.dataset.path);
+  return files[header.dataset.path];
 }
 
 function lineIds(trOrTd) {
