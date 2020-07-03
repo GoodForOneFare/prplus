@@ -43,3 +43,28 @@ export function toggleWhitespace() {
 }
 
 export function updateToolbarSummary() {}
+
+export function addBranchNameToToolbar() {
+  const branchName = document.querySelector('.head-ref');
+  if (!branchName) {
+    return;
+  }
+
+  document.querySelector('.toolbar-branch-name')?.remove();
+
+  const toolbarBranchName = document.createElement('span');
+  toolbarBranchName.classList.add('toolbar-branch-name');
+  toolbarBranchName.innerHTML = branchName.outerHTML;
+  toolbarBranchName
+    .querySelector('.css-truncate-target')
+    ?.classList.remove('css-truncate-target');
+  toolbarBranchName.addEventListener('click', (evt) => {
+    navigator.clipboard.writeText(toolbarBranchName.innerText);
+    evt.preventDefault();
+  });
+
+  const toolbarPRNumber = document.querySelector(
+    '.pr-toolbar .gh-header-number',
+  );
+  toolbarPRNumber?.appendChild(toolbarBranchName);
+}
