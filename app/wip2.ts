@@ -8,7 +8,6 @@ document.body.addEventListener('click', () => {
 });
 
 updateToolbarSummary();
-// initialScrutinizedLines();
 
 document.body.addEventListener('click', (evt) => {
   if (!evt.metaKey) {
@@ -109,18 +108,6 @@ updateToolbar();
   }
 })();
 
-// function initializeFile(fileElement) {
-//   const header = fileElement.querySelector('.file-header');
-//   const filePath = header.dataset.path;
-//   if (filePath.match(/([/]tests?[/]|[/]fixtures[/]|\.tests?\.[jt]s)/)) {
-//     fileElement.dataset.test = true;
-//   }
-
-//   if (fileElement.querySelector('.js-file-content .data.empty')) {
-//     fileElement.dataset.renamed = true;
-//   }
-// }
-
 function initializeFilesTab() {
   if (!isFilesView()) {
     return;
@@ -132,7 +119,6 @@ function initializeFilesTab() {
   });
 
   updateToolbarSummary();
-  // unhighlightReviewedLines();
 
   const filesObserver = new MutationObserver((mutationsList) => {
     mutationsList.forEach(({addedNodes}) => {
@@ -145,8 +131,6 @@ function initializeFilesTab() {
     });
 
     updateToolbarSummary();
-    // initialScrutinizedLines();
-    // unhighlightReviewedLines();
   });
 
   for (const filesContainer of document.querySelectorAll(
