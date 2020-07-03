@@ -1,7 +1,7 @@
 import {html, useEffect, useRef, useState, virtual} from 'haunted';
 import {classMap} from 'lit-html/directives/class-map';
 
-import {ref} from './lit-html-directives/ref';
+import {ref} from '../../lit-html-directives/ref';
 
 interface Command {
   text: string;

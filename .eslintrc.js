@@ -4,5 +4,5 @@ module.exports = {
     node: false,
     browser: true,
   },
-  extends: ["plugin:@shopify/typescript", "plugin:@shopify/prettier"],
+  extends: ['plugin:@shopify/typescript', 'plugin:@shopify/prettier'],
 };
