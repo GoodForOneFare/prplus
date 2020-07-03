@@ -44,7 +44,7 @@ export function getPrFileData({
 }) {
   const prData = getPrData();
   let fileData = prData.files[filePath];
-  console.log('@@fileData1', fileData);
+
   if (!fileData) {
     fileData = {lines: {}, scrutinyBlocks: []};
     prData.files[filePath] = fileData;

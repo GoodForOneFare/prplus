@@ -1,7 +1,6 @@
 // let changeColor = document.getElementById('changeColor');
 const buttons = document.querySelectorAll('button');
 
-
 // Mark all svg files as viewed
 // x = $$(".file a[title$=svg]").forEach((svg) => { const check = svg.closest('.file').querySelector('.js-reviewed-checkbox:not(:checked)'); if (check) { check.click(); } })
 
@@ -14,13 +13,13 @@ const buttons = document.querySelectorAll('button');
 // Collapse JSON files
 // x = $$(".file a[title$=\\.json]").map((link) => link.closest('.file').querySelector('[aria-expanded=true]')).filter(Boolean).forEach((collapseButton) => collapseButton.click())
 
-console.log('@@buttons', buttons);
 buttons.forEach((button) => {
   button.addEventListener('click', () => {
-    console.log('@@button click', button.id);
-    chrome.tabs.query({active: true, currentWindow: true}, function([tab]) {
-      chrome.tabs.sendMessage(tab.id, {type: button.id}, function(response) {});
-    });  
+    chrome.tabs.query({active: true, currentWindow: true}, function ([tab]) {
+      chrome.tabs.sendMessage(tab.id, {type: button.id}, function (
+        response,
+      ) {});
+    });
   });
 });
 
