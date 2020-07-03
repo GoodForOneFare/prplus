@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "build": "yarn rollup --config rollup.config.js app/main.ts",
-    "watch": "yarn rollup --watch --config rollup.config.js app/main.ts"
+    "build:watch": "yarn rollup --watch --config rollup.config.js app/main.ts",
+    "type-check": "yarn tsc --noEmit",
+    "watch": "yarn build:watch"
   },
   "devDependencies": {
     "@rollup/plugin-babel": "^5.0.0",
@@ -15,7 +17,8 @@
     "eslint": "^7.0.0",
     "prettier": "^2.0.5",
     "rollup": "^2.10.2",
-    "typescript": "^3.9.2"
+    "typescript": "^3.9.6",
+    "typescript-lit-html-plugin": "^0.9.0"
   },
   "dependencies": {
     "haunted": "^4.7.0",

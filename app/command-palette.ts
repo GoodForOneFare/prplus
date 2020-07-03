@@ -3,17 +3,28 @@ import {classMap} from 'lit-html/directives/class-map';
 
 import {ref} from './lit-html-directives/ref';
 
-const palette = virtual(({commands}) => {
+interface Command {
+  text: string;
+  callback: () => void;
+}
+
+export interface Props {
+  commands: Command[];
+}
+
+const palette = virtual((...args: any[]) => {
+  const props: Props = args[0];
+  const commands = props.commands;
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
   const [filter, setFilter] = useState('');
   const [visible, setVisible] = useState(false);
 
-  const selectedOptionElement = useRef(null);
+  const selectedOptionElement = useRef<HTMLElement | null>(null);
   useEffect(() => {
-    selectedOptionElement.current?.scrollIntoViewIfNeeded(false);
+    selectedOptionElement.current?.scrollIntoView(false);
   }, [selectedOptionElement.current]);
 
-  const inputElement = useRef(null);
+  const inputElement = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
     document.addEventListener('keydown', (evt) => {
       if (evt.shiftKey && evt.metaKey) {
@@ -26,14 +37,13 @@ const palette = virtual(({commands}) => {
   }, []);
 
   useEffect(() => {
-    if (!inputElement.current) {
-      return;
-    }
-
-    if (visible) {
-      inputElement.current.focus();
-    } else {
-      inputElement.current.value = '';
+    const element = inputElement.current;
+    if (element) {
+      if (visible) {
+        element.focus();
+      } else {
+        element.value = '';
+      }
     }
   }, [visible, inputElement.current]);
 
@@ -54,14 +64,12 @@ const palette = virtual(({commands}) => {
     setSelectedCommandIndex(0);
   };
 
-  const selectCommand = (command) => {
-    // TODO: I think command.callback will never be set, but I'm hacking around it for a demo.
-    const callback = command.callback || command.callback;
-    callback();
+  const selectCommand = (command: Command) => {
+    command.callback();
     reset();
   };
 
-  const filterKeyUpHandler = (evt) => {
+  const filterKeyUpHandler = (evt: KeyboardEvent) => {
     if (evt.code === 'Escape') {
       reset();
     } else if (evt.code === 'Enter') {
@@ -77,7 +85,8 @@ const palette = virtual(({commands}) => {
         Math.min(filteredCommands.length - 1, selectedCommandIndex + 1),
       );
     } else {
-      setFilter(evt.target.value.toUpperCase());
+      const input = evt.currentTarget as HTMLInputElement;
+      setFilter(input.value.toUpperCase());
     }
     evt.preventDefault();
     evt.cancelBubble = true;

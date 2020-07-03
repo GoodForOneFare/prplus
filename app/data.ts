@@ -1,21 +1,13 @@
 export type ReviewLineSide = 'L' | 'R';
 
-export interface ScrutinyBlock {
-  filePath: string;
-  side: ReviewLineSide;
-  lineNumbers: string[];
-}
-
 type FilePath = string;
 
+export interface PRFileData {
+  lines: Record<string, boolean>;
+}
+
 interface PR {
-  files: Record<
-    FilePath,
-    {
-      lines?: Record<string, boolean>;
-      scrutinyBlocks?: ScrutinyBlock[];
-    }
-  >;
+  files: Record<FilePath, PRFileData>;
 }
 type PRId = string;
 type PullRequestLocalStorage = Record<PRId, PR>;
@@ -26,7 +18,7 @@ const prs: PullRequestLocalStorage = window.localStorage.__prs
 
 const prId = window.location.pathname.replace(/(.+[/]pull[/]\d+).*/, '$1');
 
-function getPrData() {
+function getPrData(prId: string) {
   let pr = prs[prId];
   if (!pr) {
     pr = {files: {}};
@@ -41,20 +33,17 @@ export function getPrFileData({
 }: {
   prId: string;
   filePath: string;
-}) {
-  const prData = getPrData();
+}): PRFileData {
+  const prData = getPrData(prId);
   let fileData = prData.files[filePath];
 
   if (!fileData) {
-    fileData = {lines: {}, scrutinyBlocks: []};
+    fileData = {lines: {}};
     prData.files[filePath] = fileData;
   }
 
   if (!fileData.lines) {
     fileData.lines = {};
-  }
-  if (!fileData.scrutinyBlocks) {
-    fileData.scrutinyBlocks = [];
   }
 
   return fileData;

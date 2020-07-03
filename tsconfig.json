@@ -6,10 +6,15 @@
       "DOM.Iterable",
       "ESNext"
     ],
+    "moduleResolution": "node",
+    "plugins": [
+      {"name": "typescript-lit-html-plugin"}
+    ],
     "rootDir": ".",
     "outDir": "./build/ts",
+    "strict": true,
     "target": "ESNext",
     "module":  "ESNext"
   },
-  "include": ["."]
+  "include": ["app/**/*.ts"]
 }

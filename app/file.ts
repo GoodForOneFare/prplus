@@ -1,10 +1,4 @@
-import {
-  prs,
-  getPrFileData,
-  savePrData,
-  ScrutinyBlock,
-  ReviewLineSide,
-} from './data';
+import {prs, getPrFileData, savePrData, ReviewLineSide} from './data';
 import {findCurrentFile as findCurrentFileDOM} from './dom-helpers';
 
 const prId = window.location.pathname.replace(/(.+[/]pull[/]\d+).*/, '$1');
@@ -29,29 +23,33 @@ export function initializeFile(fileElement: HTMLElement) {
   }
 
   file.unhighlightReviewedLines();
-  file.initialScrutinizedLines();
 
   return file;
 }
 
 export function findCurrentFile() {
   const fileElement = findCurrentFileDOM();
-  return files[
-    fileElement.querySelector<HTMLElement>('.file-header').dataset.path
-  ];
+  if (fileElement) {
+    const headerElement = fileElement.querySelector<HTMLElement>(
+      '.file-header',
+    )!;
+    const filePath = headerElement.dataset.path!;
+    return files[filePath];
+  }
+  return null;
 }
 
 export function findFile(element: HTMLElement) {
   const header = element
-    .closest('.js-file')
-    .querySelector<HTMLElement>('.file-header');
+    .closest('.js-file')!
+    .querySelector<HTMLElement>('.file-header')!;
 
-  return files[header.dataset.path];
+  return files[header.dataset.path!];
 }
 
-function lineIds(trOrTd) {
+function lineIds(trOrTd: HTMLTableRowElement | HTMLTableCellElement) {
   const {tagName} = trOrTd;
-  const tr = tagName === 'tr' ? trOrTd : trOrTd.closest('tr');
+  const tr = tagName === 'tr' ? trOrTd : trOrTd.closest('tr')!;
 
   return Array.from(tr.querySelectorAll("[id^='diff-'")).map(({id}) => id);
 }
@@ -62,8 +60,8 @@ export class File {
   private readonly header: HTMLElement;
 
   constructor(private readonly fileElement: HTMLElement) {
-    this.header = fileElement.querySelector<HTMLElement>('.file-header');
-    this._path = this.header.dataset.path;
+    this.header = fileElement.querySelector<HTMLElement>('.file-header')!;
+    this._path = this.header.dataset.path!;
 
     this.isTest = Boolean(
       this._path.match(/([/]tests?[/]|[/]fixtures[/]|\.tests?\.[jt]s)/),
@@ -89,10 +87,10 @@ export class File {
   }
 
   markAsViewed() {
-    this.header.querySelector<HTMLElement>('.js-reviewed-checkbox').click();
+    this.header.querySelector<HTMLElement>('.js-reviewed-checkbox')?.click();
   }
 
-  markReviewedLines(trs: HTMLElement[], options: {updateUI?: boolean}) {
+  markReviewedLines(trs: HTMLTableRowElement[], options: {updateUI?: boolean}) {
     const fileInfo = getPrFileData({prId, filePath: this.path});
     const lines = fileInfo.lines;
     trs.forEach((tr) => {
@@ -125,7 +123,7 @@ export class File {
         '.blob-num-addition, .blob-code-addition, .blob-num-deletion, .blob-code-deletion',
       ),
     ).forEach((child) => {
-      const tr = child.closest('tr');
+      const tr = child.closest<HTMLTableRowElement>('tr')!;
       const reviewLineKey = lineIds(tr).join('-');
 
       if (lines[reviewLineKey] === true) {
@@ -133,68 +131,13 @@ export class File {
       }
     });
   }
-
-  clearScrutinyLines() {
-    const fileInfo = getPrFileData({prId, filePath: this.path});
-    fileInfo.scrutinyBlocks = [];
-    savePrData();
-
-    for (const reviewedElement of this.fileElement.querySelectorAll(
-      '.__prs--scrutinize',
-    )) {
-      reviewedElement.classList.remove(
-        '__prs--scrutinize',
-        '__prs--scrutinize--top',
-        '__prs--scrutinize--bottom',
-      );
-    }
-  }
-
-  markScrutinizedLines(numberBoxes: HTMLElement[]) {
-    const fileInfo = getPrFileData({prId, filePath: this.path});
-
-    const side = numberBoxes[0].id.replace(
-      /.+([RL])\d+$/,
-      '$1',
-    ) as ReviewLineSide;
-    const lineNumbers = Array.from(numberBoxes)
-      .map(({id}) => id)
-      .map((id) => id.replace(/.+[RL](\d+)$/, '$1'));
-
-    const blockInfo = {filePath: this.path, side, lineNumbers};
-    fileInfo.scrutinyBlocks.push(blockInfo);
-    savePrData();
-
-    this.updateScrutinizedUI(blockInfo);
-  }
-
-  updateScrutinizedUI(blockInfo: ScrutinyBlock) {
-    const lineSelectors = blockInfo.lineNumbers
-      .map((line) => `td[id$="${blockInfo.side}${line}"]`)
-      .join(', ');
-    const lineElements = Array.from(
-      this.fileElement.querySelectorAll(lineSelectors),
-    );
-
-    Array.from(lineElements).forEach((element) => {
-      element.classList.add('__prs--scrutinize');
-    });
-    const firstBox = lineElements.shift();
-    const lastBox = lineElements.pop() || firstBox;
-    firstBox.classList.add('__prs--scrutinize--top');
-    lastBox.classList.add('__prs--scrutinize--bottom');
-  }
-
-  initialScrutinizedLines() {
-    const fileInfo = getPrFileData({prId, filePath: this.path});
-
-    fileInfo.scrutinyBlocks?.forEach((scrutinyBlock) => {
-      this.updateScrutinizedUI(scrutinyBlock);
-    });
-  }
 }
 
-export function updateHeader(file) {
+export function updateHeader(file: HTMLElement | null | undefined) {
+  if (!file) {
+    return;
+  }
+
   const [additions, deletions, reviewedAdditions, reviewedDeletions] = [
     file.querySelectorAll('.blob-num-addition').length,
     file.querySelectorAll('.blob-num-deletion').length,
@@ -202,7 +145,9 @@ export function updateHeader(file) {
     file.querySelectorAll('.blob-num-deletion.prs--reviewed').length,
   ];
 
-  const container = file.querySelector('.file-header .file-actions');
+  const container = file.querySelector<HTMLElement>(
+    '.file-header .file-actions',
+  )!;
   let progress = container.querySelector('.prs--review-progress');
   if (!progress) {
     container.style.display = 'flex';
