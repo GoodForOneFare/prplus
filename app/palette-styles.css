@@ -19,12 +19,13 @@
   height: 150px;
 }
 
-#__prs_command_palette li.hidden{
-  display: none;
+#__prs_command_palette li {
+  /* list-style: none; */
+  padding: 0 0.5rem;
 }
-  
-#__prs_command_palette li.selected {
-  background-color: #aaa;
+
+#__prs_command_palette li.selected, #__prs_command_palette li:hover {
+  background-color: #bbb;
 }
 
 #__prs_command_palette input {

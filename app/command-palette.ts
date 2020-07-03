@@ -8,6 +8,11 @@ const palette = virtual(({commands}) => {
   const [filter, setFilter] = useState('');
   const [visible, setVisible] = useState(false);
 
+  const selectedOptionElement = useRef(null);
+  useEffect(() => {
+    selectedOptionElement.current?.scrollIntoViewIfNeeded(false);
+  }, [selectedOptionElement.current]);
+
   const inputElement = useRef(null);
   useEffect(() => {
     document.addEventListener('keydown', (evt) => {
@@ -32,6 +37,10 @@ const palette = virtual(({commands}) => {
     }
   }, [visible, inputElement.current]);
 
+  if (!visible) {
+    return null;
+  }
+
   const filteredCommands =
     filter === ''
       ? commands
@@ -39,28 +48,28 @@ const palette = virtual(({commands}) => {
           command.text.toUpperCase().includes(filter),
         );
 
+  const reset = () => {
+    setFilter('');
+    setVisible(false);
+    setSelectedCommandIndex(0);
+  };
+
+  const selectCommand = (command) => {
+    // TODO: I think command.callback will never be set, but I'm hacking around it for a demo.
+    const callback = command.callback || command.callback;
+    callback();
+    reset();
+  };
+
   const filterKeyUpHandler = (evt) => {
     if (evt.code === 'Escape') {
-      // Hiding the palette will trigger a `change` event unless its input
-      // is returned to its original value.
-      setFilter('');
-      //   inputElement.current.value = '';
-      setVisible(false);
-      setSelectedCommandIndex(0);
+      reset();
     } else if (evt.code === 'Enter') {
       if (filteredCommands.length > 0) {
-        // TODO: I think command.callback will never be set, but I'm hacking around it for a demo.
-        const callback =
-          filteredCommands[selectedCommandIndex].callback ||
-          filteredCommands[selectedCommandIndex].command.callback;
-
-        callback();
+        selectCommand(filteredCommands[selectedCommandIndex]);
       }
 
-      setVisible(false);
-      setSelectedCommandIndex(0);
-      //   inputElement.current.value = '';
-      setFilter('');
+      reset();
     } else if (evt.code === 'ArrowUp') {
       setSelectedCommandIndex(Math.max(0, selectedCommandIndex - 1));
     } else if (evt.code === 'ArrowDown') {
@@ -81,14 +90,22 @@ const palette = virtual(({commands}) => {
   />`;
   const paletteList = html`
     <div id="__prs_command_list">
-      ${filteredCommands.map(
-        (command, commandIndex) =>
-          html`<li
-            class=${classMap({selected: commandIndex === selectedCommandIndex})}
-          >
-            ${command.text}
-          </li>`,
-      )}
+      <ul>
+        ${filteredCommands.map(
+          (command, commandIndex) =>
+            html`<li
+              ?ref=${commandIndex === selectedCommandIndex
+                ? ref(selectedOptionElement)
+                : null}
+              class=${classMap({
+                selected: commandIndex === selectedCommandIndex,
+              })}
+              @click=${() => selectCommand(command)}
+            >
+              ${command.text}
+            </li>`,
+        )}
+      </ul>
     </div>
   `;
 
