@@ -1956,6 +1956,13 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
+haunted@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/haunted/-/haunted-4.7.0.tgz#23c653f4701ccf970f5e2939fe3c05fee7cc5fc0"
+  integrity sha512-ajsUengbSL2ELljJ2VLU2o5BfG/drzZV+BvSLALvIBx+24owmxC5iW7+SK/Y667JaVmratEPR010bYpGKAt7ow==
+  dependencies:
+    lit-html "^1.0.0"
+
 header-case@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/header-case/-/header-case-2.0.3.tgz#8a7407d16edfd5c970f8ebb116e6383f855b5a72"
@@ -2176,6 +2183,11 @@ levn@^0.4.1:
   dependencies:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
+
+lit-html@^1.0.0, lit-html@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-1.2.1.tgz#1fb933dc1e2ddc095f60b8086277d4fcd9d62cc8"
+  integrity sha512-GSJHHXMGLZDzTRq59IUfL9FCdAlGfqNp/dEa7k7aBaaWD+JKaCjsAk9KYm2V12ItonVaYx2dprN66Zdm1AuBTQ==
 
 load-json-file@^2.0.0:
   version "2.0.0"

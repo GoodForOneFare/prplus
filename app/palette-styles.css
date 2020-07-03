@@ -10,6 +10,10 @@
   z-index: 9000;
 }
 
+#__prs_command_palette.visible {
+  display: flex;
+}
+
 #__prs_command_list {
   overflow-y: scroll;
   height: 150px;

@@ -16,5 +16,9 @@
     "prettier": "^2.0.5",
     "rollup": "^2.10.2",
     "typescript": "^3.9.2"
+  },
+  "dependencies": {
+    "haunted": "^4.7.0",
+    "lit-html": "^1.2.1"
   }
 }

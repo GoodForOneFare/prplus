@@ -1,3 +1,6 @@
+import {render} from 'haunted';
+
+import {palette} from './command-palette';
 import {findCurrentFile} from './file';
 import {clearCurrentFileReviewedLines} from './review';
 import {clearCurrentFileScrutinyLines} from './scrutiny';
@@ -7,13 +10,10 @@ import {
   toggleWhitespace,
 } from './toolbar';
 
-const oldPalette = document.querySelector('#__prs_command_palette');
-if (oldPalette) {
-  oldPalette.remove();
-}
-
-const paletteList = document.createElement('div');
-paletteList.id = '__prs_command_list';
+// const oldPalette = document.querySelector('#__prs_command_palette');
+// if (oldPalette) {
+//   oldPalette.remove();
+// }
 
 const paletteFileTypes = [
   'deleted',
@@ -336,9 +336,6 @@ function generateCommands() {
   ].sort();
 }
 
-const paletteInput = document.createElement('input');
-paletteInput.type = 'text';
-
 let currentCommand = 0;
 function getMatchingCommands(rawFilterText) {
   const filterText = rawFilterText.toUpperCase();
@@ -354,123 +351,44 @@ function getMatchingCommands(rawFilterText) {
   return filteredCommands;
 }
 
-const palette = document.createElement('div');
-palette.id = '__prs_command_palette';
-palette.appendChild(paletteList);
-palette.appendChild(paletteInput);
-
 function selectCurrentCommand() {
-  if (filteredCommands.length === 0) {
-    return;
-  }
-
-  // TODO: I think command.callback will never be set, but I'm hacking around it for a demo.
-  const callback =
-    filteredCommands[currentCommand].callback ||
-    filteredCommands[currentCommand].command.callback;
-  callback();
-  currentCommand = 0;
-  paletteInput.value = '';
-  palette.style.display = 'none';
-
-  const commandItems = paletteList.querySelectorAll('li.hidden');
-
-  Array.from(commandItems).forEach((item) => {
-    item.classList.remove('hidden');
-  });
+  // if (filteredCommands.length === 0) {
+  //   return;
+  // }
+  // // TODO: I think command.callback will never be set, but I'm hacking around it for a demo.
+  // const callback =
+  //   filteredCommands[currentCommand].callback ||
+  //   filteredCommands[currentCommand].command.callback;
+  // callback();
+  // currentCommand = 0;
+  // paletteInput.value = '';
+  // palette.style.display = 'none';
+  // const commandItems = paletteList.querySelectorAll('li.hidden');
+  // Array.from(commandItems).forEach((item) => {
+  //   item.classList.remove('hidden');
+  // });
 }
 
-paletteInput.addEventListener('change', (evt) => {
-  const target = evt.target as HTMLInputElement;
-  if (target.value !== '') {
-    selectCurrentCommand();
-  }
-});
+// paletteInput.addEventListener('change', (evt) => {
+//   const target = evt.target as HTMLInputElement;
+//   if (target.value !== '') {
+//     selectCurrentCommand();
+//   }
+// });
 
-paletteInput.addEventListener('keyup', (evt) => {
-  if (evt.code === 'Escape') {
-    // Hiding the palette will trigger a `change` event unless its input
-    // is returned to its original value.
-    paletteInput.value = '';
-    evt.preventDefault();
-    palette.style.display = 'none';
-  } else if (evt.code === 'Enter') {
-    selectCurrentCommand();
-  }
-});
+// paletteInput.addEventListener('keyup', (evt) => {
+//   if (evt.code === 'Escape') {
+//     // Hiding the palette will trigger a `change` event unless its input
+//     // is returned to its original value.
+//     paletteInput.value = '';
+//     evt.preventDefault();
+//     palette.style.display = 'none';
+//   } else if (evt.code === 'Enter') {
+//     selectCurrentCommand();
+//   }
+// });
 
-function paletteClearSelectedCommand() {
-  const selected = paletteList.querySelector('li.selected');
-  if (selected) {
-    selected.classList.remove('selected');
-  }
-}
-
-paletteInput.addEventListener('input', (evt) => {
-  const target = evt.target as HTMLInputElement;
-  const matches = getMatchingCommands(target.value);
-  paletteClearSelectedCommand();
-  currentCommand = 0;
-  const commandItems = paletteList.querySelectorAll('li');
-
-  Array.from(commandItems).forEach((item, index) => {
-    if (matches.find((match) => match.index === index)) {
-      item.classList.remove('hidden');
-    } else {
-      item.classList.add('hidden');
-    }
-  });
-  const firstItem = paletteList.querySelector('li:not(.hidden)');
-  if (firstItem) {
-    firstItem.classList.add('selected');
-  }
-});
-
-document.body.appendChild(palette);
-
-paletteInput.focus();
-
-function paletteSetSelectedCommand(newCommandIndex) {
-  const commandItems = paletteList.querySelectorAll('li:not(.hidden)');
-  if (commandItems.length === 0) {
-    return;
-  }
-
-  commandItems[currentCommand].classList.remove('selected');
-  if (newCommandIndex > currentCommand) {
-    currentCommand = Math.min(newCommandIndex, filteredCommands.length - 1);
-  } else {
-    currentCommand = Math.max(newCommandIndex, 0);
-  }
-  commandItems[currentCommand].classList.add('selected');
-}
-
-paletteInput.addEventListener('keyup', (evt) => {
-  if (evt.code === 'ArrowUp') {
-    paletteSetSelectedCommand(currentCommand - 1);
-    evt.preventDefault();
-  } else if (evt.code === 'ArrowDown') {
-    paletteSetSelectedCommand(currentCommand + 1);
-    evt.preventDefault();
-  }
-});
-
-document.addEventListener('keydown', (evt) => {
-  if (evt.shiftKey && evt.metaKey) {
-    if (evt.code === 'KeyP') {
-      palette.style.display = 'flex';
-      paletteInput.focus();
-      generateCommands();
-      filteredCommands = commands;
-      currentCommand = 0;
-      paletteList.innerHTML = `<ul><li>${commands
-        .map(({text}) => text)
-        .join('</li><li>')}</li></ul>`;
-      paletteList.querySelector('li').classList.add('selected');
-      evt.preventDefault();
-      return false;
-    }
-  }
-
-  return true;
-});
+const container = document.createElement('div');
+document.body.appendChild(container);
+generateCommands();
+render(palette({commands}), container);
