@@ -1,16 +1,12 @@
-import {html, useEffect, useRef, useState} from 'haunted';
+import {html, useState} from 'haunted';
 import {classMap} from 'lit-html/directives/class-map';
 
 import {virtualWithProps} from '../../haunted-extensions/virtual-with-props';
-import {ref} from '../../lit-html-directives/ref';
 
 import {Activator} from './Activator';
+import {Command} from './types';
+import {CommandList} from './CommandList';
 import {PaletteInput} from './PaletteInput';
-
-interface Command {
-  text: string;
-  callback: () => void;
-}
 
 export interface Props {
   commands: Command[];
@@ -20,11 +16,6 @@ const palette = virtualWithProps(({commands}: Props) => {
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
   const [filter, setFilter] = useState('');
   const [visible, setVisible] = useState(false);
-
-  const selectedOptionElement = useRef<HTMLElement | null>(null);
-  useEffect(() => {
-    selectedOptionElement.current?.scrollIntoView(false);
-  }, [selectedOptionElement.current]);
 
   if (!visible) {
     return Activator({handleVisibilityChange: setVisible});
@@ -69,25 +60,15 @@ const palette = virtualWithProps(({commands}: Props) => {
     visible,
   });
 
+  const commandList = CommandList({
+    commands: filteredCommands,
+    handleSelectCommand: selectCommand,
+    selectedCommandIndex,
+  });
+
   const paletteList = html`
     <div id="__prs_command_list">
-      ${Activator({handleVisibilityChange: setVisible})}
-      <ul>
-        ${filteredCommands.map(
-          (command, commandIndex) =>
-            html`<li
-              ?ref=${commandIndex === selectedCommandIndex
-                ? ref(selectedOptionElement)
-                : null}
-              class=${classMap({
-                selected: commandIndex === selectedCommandIndex,
-              })}
-              @click=${() => selectCommand(command)}
-            >
-              ${command.text}
-            </li>`,
-        )}
-      </ul>
+      ${Activator({handleVisibilityChange: setVisible})} ${commandList}
     </div>
   `;
 
