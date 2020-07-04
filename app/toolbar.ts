@@ -1,13 +1,3 @@
-interface TypeSummary {
-  type: string;
-  total: number;
-  viewed: number;
-  deleted: number;
-  open: number;
-}
-
-type Summary = Record<string, TypeSummary>;
-
 export function switchToSplitDiff() {
   const checkbox = document.querySelector<HTMLInputElement>(
     'input[type=radio][name=diff][value=split]:not([checked])',
