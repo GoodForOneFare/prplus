@@ -16,8 +16,6 @@ const prs: PullRequestLocalStorage = window.localStorage.__prs
   ? JSON.parse(window.localStorage.__prs)
   : {};
 
-const prId = window.location.pathname.replace(/(.+[/]pull[/]\d+).*/, '$1');
-
 function getPrData(prId: string) {
   let pr = prs[prId];
   if (!pr) {

@@ -1,7 +1,8 @@
-import {html, useEffect, useRef, useState, virtual} from 'haunted';
+import {html, useEffect, useRef, useState} from 'haunted';
 import {classMap} from 'lit-html/directives/class-map';
-import {virtualWithProps} from 'app/haunted-extensions/virtual-with-props';
-import {ref} from 'app/lit-html-directives/ref';
+
+import {virtualWithProps} from '../../haunted-extensions/virtual-with-props';
+import {ref} from '../../lit-html-directives/ref';
 
 import {Activator} from './Activator';
 import {PaletteInput} from './PaletteInput';

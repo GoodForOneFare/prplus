@@ -1,4 +1,4 @@
-import {prs, getPrFileData, savePrData, ReviewLineSide} from './data';
+import {prs, getPrFileData, savePrData} from './data';
 import {findCurrentFile as findCurrentFileDOM} from './dom-helpers';
 
 const prId = window.location.pathname.replace(/(.+[/]pull[/]\d+).*/, '$1');
