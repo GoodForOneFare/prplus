@@ -1,4 +1,4 @@
-import {findFile, updateHeader} from './file';
+import {findFile} from './file';
 
 document.body.addEventListener('click', (evt) => {
   if (!evt.metaKey) {
@@ -14,7 +14,6 @@ document.body.addEventListener('click', (evt) => {
       evt.preventDefault();
       const tr = target.closest('tr')!;
       findFile(tr).markReviewedLines([tr], {updateUI: true});
-      updateHeader(tr.closest<HTMLElement>('.js-file'));
     }
   }
 });

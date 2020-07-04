@@ -54,7 +54,7 @@ function lineIds(trOrTd: HTMLTableRowElement | HTMLTableCellElement) {
   return Array.from(tr.querySelectorAll("[id^='diff-'")).map(({id}) => id);
 }
 
-export class File {
+class File {
   readonly _path: string;
   readonly isTest: boolean;
   private readonly header: HTMLElement;
@@ -131,40 +131,4 @@ export class File {
       }
     });
   }
-}
-
-export function updateHeader(file: HTMLElement | null | undefined) {
-  if (!file) {
-    return;
-  }
-
-  const [additions, deletions, reviewedAdditions, reviewedDeletions] = [
-    file.querySelectorAll('.blob-num-addition').length,
-    file.querySelectorAll('.blob-num-deletion').length,
-    file.querySelectorAll('.blob-num-addition.prs--reviewed').length,
-    file.querySelectorAll('.blob-num-deletion.prs--reviewed').length,
-  ];
-
-  const container = file.querySelector<HTMLElement>(
-    '.file-header .file-actions',
-  )!;
-  let progress = container.querySelector('.prs--review-progress');
-  if (!progress) {
-    container.style.display = 'flex';
-    container.style.alignItems = 'center';
-
-    progress = document.createElement('div');
-    progress.classList.add('prs--review-progress');
-    container.prepend(progress);
-  }
-
-  const addedProgress = additions
-    ? `${Math.floor((reviewedAdditions / additions) * 100)}%`
-    : '-';
-  const deletionProgress = deletions
-    ? `${Math.floor((reviewedDeletions / deletions) * 100)}%`
-    : '-';
-  progress.innerHTML = `
-          ${addedProgress}, ${deletionProgress}
-        `;
 }
