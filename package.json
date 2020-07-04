@@ -6,6 +6,7 @@
   "scripts": {
     "build": "yarn rollup --config rollup.config.js app/main.ts",
     "build:watch": "yarn rollup --watch --config rollup.config.js app/main.ts",
+    "lint": "yarn eslint .",
     "type-check": "yarn tsc --noEmit",
     "watch": "yarn build:watch"
   },

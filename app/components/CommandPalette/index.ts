@@ -1,7 +1,10 @@
 import {html, useEffect, useRef, useState, virtual} from 'haunted';
 import {classMap} from 'lit-html/directives/class-map';
+import {virtualWithProps} from 'app/haunted-extensions/virtual-with-props';
+import {ref} from 'app/lit-html-directives/ref';
 
-import {ref} from '../../lit-html-directives/ref';
+import {Activator} from './Activator';
+import {PaletteInput} from './PaletteInput';
 
 interface Command {
   text: string;
@@ -12,9 +15,7 @@ export interface Props {
   commands: Command[];
 }
 
-const palette = virtual((...args: any[]) => {
-  const props: Props = args[0];
-  const commands = props.commands;
+const palette = virtualWithProps(({commands}: Props) => {
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
   const [filter, setFilter] = useState('');
   const [visible, setVisible] = useState(false);
@@ -24,31 +25,8 @@ const palette = virtual((...args: any[]) => {
     selectedOptionElement.current?.scrollIntoView(false);
   }, [selectedOptionElement.current]);
 
-  const inputElement = useRef<HTMLInputElement | null>(null);
-  useEffect(() => {
-    document.addEventListener('keydown', (evt) => {
-      if (evt.shiftKey && evt.metaKey) {
-        if (evt.code === 'KeyP') {
-          setVisible(true);
-          evt.preventDefault();
-        }
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    const element = inputElement.current;
-    if (element) {
-      if (visible) {
-        element.focus();
-      } else {
-        element.value = '';
-      }
-    }
-  }, [visible, inputElement.current]);
-
   if (!visible) {
-    return null;
+    return Activator({handleVisibilityChange: setVisible});
   }
 
   const filteredCommands =
@@ -69,36 +47,30 @@ const palette = virtual((...args: any[]) => {
     reset();
   };
 
-  const filterKeyUpHandler = (evt: KeyboardEvent) => {
-    if (evt.code === 'Escape') {
-      reset();
-    } else if (evt.code === 'Enter') {
+  const input = PaletteInput({
+    handleReset: () => reset(),
+    handleSelectCommand: () => {
       if (filteredCommands.length > 0) {
         selectCommand(filteredCommands[selectedCommandIndex]);
       }
 
       reset();
-    } else if (evt.code === 'ArrowUp') {
+    },
+    handlePreviousCommand: () => {
       setSelectedCommandIndex(Math.max(0, selectedCommandIndex - 1));
-    } else if (evt.code === 'ArrowDown') {
+    },
+    handleNextCommand: () => {
       setSelectedCommandIndex(
         Math.min(filteredCommands.length - 1, selectedCommandIndex + 1),
       );
-    } else {
-      const input = evt.currentTarget as HTMLInputElement;
-      setFilter(input.value.toUpperCase());
-    }
-    evt.preventDefault();
-    evt.cancelBubble = true;
-  };
+    },
+    handleFilterChange: setFilter,
+    visible,
+  });
 
-  const paletteInput = html`<input
-    type="text"
-    ?ref=${ref(inputElement)}
-    @keyup=${filterKeyUpHandler}
-  />`;
   const paletteList = html`
     <div id="__prs_command_list">
+      ${Activator({handleVisibilityChange: setVisible})}
       <ul>
         ${filteredCommands.map(
           (command, commandIndex) =>
@@ -120,7 +92,7 @@ const palette = virtual((...args: any[]) => {
 
   return html`
     <div id="__prs_command_palette" class=${classMap({visible})}>
-      ${paletteList} ${paletteInput}
+      ${paletteList} ${input}
     </div>
   `;
 });
