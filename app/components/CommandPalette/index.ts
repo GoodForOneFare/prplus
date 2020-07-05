@@ -12,7 +12,7 @@ export interface Props {
   commands: Command[];
 }
 
-const palette = virtualWithProps(({commands}: Props) => {
+export const palette = virtualWithProps(({commands}: Props) => {
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
   const [filter, setFilter] = useState('');
   const [visible, setVisible] = useState(false);
@@ -78,5 +78,3 @@ const palette = virtualWithProps(({commands}: Props) => {
     </div>
   `;
 });
-
-export {palette};
