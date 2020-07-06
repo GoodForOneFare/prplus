@@ -1,9 +1,6 @@
-import {html, useEffect, useRef} from 'haunted';
+import React, {useEffect, useRef, KeyboardEvent} from 'react';
 
-import {virtualWithProps} from '../../haunted-extensions/virtual-with-props';
-import {ref} from '../../lit-html-directives/ref';
-
-export const PaletteInput = virtualWithProps(function PaletteInput(props: {
+export function PaletteInput(props: {
   handleFilterChange: (filterText: string) => void;
   handleNextCommand: () => void;
   handlePreviousCommand: () => void;
@@ -32,26 +29,21 @@ export const PaletteInput = virtualWithProps(function PaletteInput(props: {
     }
   }, [visible, inputElement.current]);
 
-  const filterKeyUpHandler = (evt: KeyboardEvent) => {
-    if (evt.code === 'Escape') {
+  const filterKeyUpHandler = (evt: KeyboardEvent<HTMLInputElement>) => {
+    if (evt.key === 'Escape') {
       handleReset();
-    } else if (evt.code === 'Enter') {
+    } else if (evt.key === 'Enter') {
       handleSelectCommand();
-    } else if (evt.code === 'ArrowUp') {
+    } else if (evt.key === 'ArrowUp') {
       handlePreviousCommand();
-    } else if (evt.code === 'ArrowDown') {
+    } else if (evt.key === 'ArrowDown') {
       handleNextCommand();
     } else {
       const input = evt.currentTarget as HTMLInputElement;
       handleFilterChange(input.value.toUpperCase());
     }
     evt.preventDefault();
-    evt.cancelBubble = true;
   };
 
-  return html`<input
-    type="text"
-    ?ref=${ref(inputElement)}
-    @keyup=${filterKeyUpHandler}
-  />`;
-});
+  return <input type="text" ref={inputElement} onKeyUp={filterKeyUpHandler} />;
+}

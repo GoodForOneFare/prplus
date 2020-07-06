@@ -11,6 +11,7 @@ document.body.addEventListener('click', () => {
 
 updateToolbarSummary();
 addBranchNameToToolbar();
+console.log('LOL');
 
 (function defaltFilesTabToWhitespace() {
   const filesTab = document.querySelector('a.tabnav-tab[href$=files]') as

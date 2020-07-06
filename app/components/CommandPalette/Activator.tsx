@@ -1,4 +1,4 @@
-import {useEffect} from 'haunted';
+import {useEffect} from 'react';
 
 export interface ActivatorProps {
   handleVisibilityChange: (isVisible: boolean) => void;
