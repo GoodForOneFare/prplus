@@ -28,6 +28,10 @@
   background-color: #bbb;
 }
 
+#__prs_command_palette form {
+  display: flex;
+}
+
 #__prs_command_palette input {
   flex: 1 1 auto;
 }

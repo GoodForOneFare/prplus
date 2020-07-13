@@ -9,7 +9,7 @@
     },
     "content_scripts": [{
       "matches": ["https://*.github.com/*"],
-      "js": ["app.js"],
+      "js": ["app.js", "react-ui.js"],
       "css": ["app/global.css", "app/palette-styles.css", "app/review.css"]
     }],
     "page_action": {

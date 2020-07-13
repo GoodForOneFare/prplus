@@ -1,18 +1,20 @@
 import React, {useState} from 'react';
 
-import {Activator} from './Activator';
-import {Command} from './types';
+import {Command} from '../../types';
+
 import {CommandList} from './CommandList';
 import {PaletteInput} from './PaletteInput';
 
 export interface Props {
   commands: Command[];
+  isFilesView: boolean;
+  isVisible: boolean;
+  onReset: () => void;
 }
 
-export function Palette({commands}: Props) {
+export function Palette({commands, isVisible, onReset}: Props) {
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
   const [filter, setFilter] = useState('');
-  const [visible, setVisible] = useState(false);
 
   const filteredCommands =
     filter === ''
@@ -23,8 +25,8 @@ export function Palette({commands}: Props) {
 
   const reset = () => {
     setFilter('');
-    setVisible(false);
     setSelectedCommandIndex(0);
+    onReset();
   };
 
   const selectCommand = (command: Command) => {
@@ -51,7 +53,7 @@ export function Palette({commands}: Props) {
         );
       }}
       handleFilterChange={setFilter}
-      visible={visible}
+      visible={isVisible}
     />
   );
 
@@ -63,12 +65,11 @@ export function Palette({commands}: Props) {
     />
   );
 
+  const classNames = isVisible ? 'visible' : '';
+
   return (
-    <div id="__prs_command_palette" className={visible ? 'visible' : ''}>
-      <div id="__prs_command_list">
-        <Activator handleVisibilityChange={setVisible} />
-        {commandList}
-      </div>
+    <div id="__prs_command_palette" className={classNames}>
+      <div id="__prs_command_list">{commandList}</div>
       {input}
     </div>
   );

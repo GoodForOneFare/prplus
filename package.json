@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "yarn rollup --config rollup.config.js app/main.ts",
-    "build:watch": "yarn rollup --watch --config rollup.config.js app/main.ts",
+    "build": "yarn webpck --mode=production",
+    "build:watch": "rm -fr build; NODE_ENV=development yarn webpack --mode=development --watch",
     "lint": "yarn eslint .",
     "type-check": "yarn tsc --noEmit",
     "watch": "yarn build:watch"
@@ -24,6 +24,7 @@
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
     "prettier": "^2.0.5",
+    "regenerator-runtime": "^0.13.5",
     "rollup": "^2.10.2",
     "style-loader": "^1.2.1",
     "typescript": "^3.9.6",

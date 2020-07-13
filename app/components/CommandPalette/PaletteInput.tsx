@@ -27,7 +27,7 @@ export function PaletteInput(props: {
         element.value = '';
       }
     }
-  }, [visible, inputElement.current]);
+  }, [visible]);
 
   const filterKeyUpHandler = (evt: KeyboardEvent<HTMLInputElement>) => {
     if (evt.key === 'Escape') {
@@ -45,5 +45,19 @@ export function PaletteInput(props: {
     evt.preventDefault();
   };
 
-  return <input type="text" ref={inputElement} onKeyUp={filterKeyUpHandler} />;
+  const filterInputId = 'filterInput';
+  return (
+    <form>
+      <label htmlFor={filterInputId} style={{display: 'none'}}>
+        Filter:
+      </label>
+      <input
+        aria-labelledby={filterInputId}
+        id={filterInputId}
+        type="text"
+        ref={inputElement}
+        onKeyUp={filterKeyUpHandler}
+      />
+    </form>
+  );
 }

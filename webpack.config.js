@@ -17,8 +17,9 @@ const config = {
     app: path.join(__dirname, 'app', 'main.ts'),
   },
   output: {
-    path: path.resolve(__dirname, './build'),
+    chunkFilename: '[name].js',
     filename: '[name].js',
+    path: path.resolve(__dirname, './build'),
   },
   resolve: {
     alias: {

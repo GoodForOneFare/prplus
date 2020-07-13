@@ -12,9 +12,10 @@ interface PR {
 type PRId = string;
 type PullRequestLocalStorage = Record<PRId, PR>;
 
-const prs: PullRequestLocalStorage = window.localStorage.__prs
-  ? JSON.parse(window.localStorage.__prs)
-  : {};
+// const prs: PullRequestLocalStorage = window.localStorage.__prs
+//   ? JSON.parse(window.localStorage.__prs)
+//   : {};
+const prs: PullRequestLocalStorage = {};
 
 function getPrData(prId: string) {
   let pr = prs[prId];
@@ -50,5 +51,5 @@ export function getPrFileData({
 export {prs};
 
 export function savePrData() {
-  window.localStorage.__prs = JSON.stringify(prs);
+  // window.localStorage.__prs = JSON.stringify(prs);
 }

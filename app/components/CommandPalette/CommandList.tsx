@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 
-import {Command} from './types';
+import {Command} from '../../types';
 
 interface CommandListProps {
   commands: Command[];
@@ -16,22 +16,26 @@ export function CommandList({
   const selectedOptionElement = useRef<HTMLLIElement | null>(null);
   useEffect(() => {
     selectedOptionElement.current?.scrollIntoView(false);
-  }, [selectedOptionElement.current]);
+  });
 
   return (
     <ul>
-      {commands.map((command, commandIndex) => (
-        <li
-          key={command.text}
-          className={commandIndex === selectedCommandIndex ? 'selected' : ''}
-          onClick={() => handleSelectCommand(command)}
-          ref={
-            commandIndex === selectedCommandIndex ? selectedOptionElement : null
-          }
-        >
-          {command.text}
-        </li>
-      ))}
+      {commands.map((command, commandIndex) => {
+        const isSelected = commandIndex === selectedCommandIndex;
+        const className = isSelected ? 'selected' : '';
+        const ref = isSelected ? selectedOptionElement : null;
+        return (
+          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
+          <li
+            key={command.text}
+            className={className}
+            onClick={() => handleSelectCommand(command)}
+            ref={ref}
+          >
+            {command.text}
+          </li>
+        );
+      })}
     </ul>
   );
 }
