@@ -1,10 +1,30 @@
 import {useEffect, useRef} from 'react';
 
-export function useFilesObserver(callback: (newFiles: any[]) => void) {
-  const files = useRef<any[]>([]);
+export interface FileMetadata {
+  id: string;
+  path: string;
+  element: HTMLElement;
+  header: HTMLElement;
+}
+
+function fileMetadata(file: HTMLElement): FileMetadata {
+  const header = file.querySelector<HTMLElement>('.file-header')!;
+  return {
+    id: file.id,
+    element: file,
+    header,
+    path: header.dataset.path!,
+  };
+}
+
+export function useFilesObserver(callback: (files: any[]) => void) {
+  const files = useRef<FileMetadata[]>([]);
 
   useEffect(() => {
-    files.current.push(...Array.from(document.querySelectorAll('.js-file')));
+    const initialFiles = Array.from(
+      document.querySelectorAll<HTMLElement>('.js-file'),
+    );
+    files.current.push(...initialFiles.map(fileMetadata));
     callback(files.current);
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -24,7 +44,13 @@ export function useFilesObserver(callback: (newFiles: any[]) => void) {
           )
           .filter((element) => element.classList?.contains('js-file'));
 
-        files.current.push(...addedFiles);
+        const addedInfo = addedFiles.map(fileMetadata);
+        files.current.push(...addedInfo);
+        console.log(
+          '@@filesObserver found ',
+          addedInfo.length,
+          files.current.length,
+        );
         callback(files.current);
       });
     });
@@ -43,6 +69,9 @@ export function useFilesObserver(callback: (newFiles: any[]) => void) {
       });
     }
 
-    return () => filesObserver.disconnect();
+    return () => {
+      console.log('@@filesObserver.disconnect');
+      return filesObserver.disconnect();
+    };
   }, [callback]);
 }

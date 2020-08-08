@@ -2,7 +2,7 @@
     "name": "Github PR+",
     "version": "1.0",
     "description": "Enhanced Github PR reviews",
-    "permissions": ["activeTab", "clipboardWrite", "declarativeContent", "storage"],
+    "permissions": ["activeTab", "clipboardWrite", "declarativeContent", "management", "storage"],
     "background": {
       "scripts": ["background.js"],
       "persistent": false

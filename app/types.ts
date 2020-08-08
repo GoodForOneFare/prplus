@@ -1,6 +1,8 @@
+export type CommandTextCallback = (filterText: string) => string;
+
 export interface Command {
-  text: string;
-  callback: () => void;
+  text: string | CommandTextCallback;
+  callback(filterText: string): void;
 }
 
 export enum DiffType {

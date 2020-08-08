@@ -16,11 +16,14 @@ export function Palette({commands, isVisible, onReset}: Props) {
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
   const [filter, setFilter] = useState('');
 
+  const uppercaseFilter = filter.toUpperCase();
   const filteredCommands =
-    filter === ''
+    uppercaseFilter === ''
       ? commands
       : commands.filter((command) =>
-          command.text.toUpperCase().includes(filter),
+          typeof command.text === 'string'
+            ? command.text.toUpperCase().includes(uppercaseFilter)
+            : command.text(filter).toUpperCase().includes(uppercaseFilter),
         );
 
   const reset = () => {
@@ -30,7 +33,7 @@ export function Palette({commands, isVisible, onReset}: Props) {
   };
 
   const selectCommand = (command: Command) => {
-    command.callback();
+    command.callback(filter);
     reset();
   };
 
@@ -60,6 +63,7 @@ export function Palette({commands, isVisible, onReset}: Props) {
   const commandList = (
     <CommandList
       commands={filteredCommands}
+      filterText={filter}
       handleSelectCommand={selectCommand}
       selectedCommandIndex={selectedCommandIndex}
     />

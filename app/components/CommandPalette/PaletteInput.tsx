@@ -40,18 +40,24 @@ export function PaletteInput(props: {
       handleNextCommand();
     } else {
       const input = evt.currentTarget as HTMLInputElement;
-      handleFilterChange(input.value.toUpperCase());
+      handleFilterChange(input.value);
     }
     evt.preventDefault();
   };
 
   const filterInputId = 'filterInput';
   return (
-    <form>
+    <form
+      onSubmit={(evt) => {
+        evt.preventDefault();
+        return false;
+      }}
+    >
       <label htmlFor={filterInputId} style={{display: 'none'}}>
         Filter:
       </label>
       <input
+        autoComplete="off"
         aria-labelledby={filterInputId}
         id={filterInputId}
         type="text"
