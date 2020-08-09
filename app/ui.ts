@@ -5,44 +5,13 @@ import {render} from 'react-dom';
 import {createElement} from 'react';
 
 import {Command} from './types';
-import {FileMetadata} from './dom/file';
-import {filesListener} from './dom/files-listener';
-import {
-  hideComments,
-  showComments,
-  switchToSplitDiff,
-  switchToUnifiedDiff,
-  toggleWhitespace,
-} from './dom/utilities';
+import {FileMetadata} from './github-ui/file';
+import {GithubUI} from './github-ui';
 
 // Async chunk loading requires a plugin-relative base path.
 // @ts-expect-error
 // eslint-disable-next-line @typescript-eslint/camelcase
 __webpack_public_path__ = chrome.runtime.getURL('');
-
-const files: FileMetadata[] = [];
-
-function findCurrentFileDOM() {
-  const header = Array.from(
-    document.querySelectorAll<HTMLElement>(
-      '.js-file:not([data-file-user-viewed]) .file-header',
-    ),
-  ).find((header) => header.getBoundingClientRect().y >= 60);
-
-  return header ? header.closest('.js-file') : null;
-}
-
-function findCurrentFile() {
-  const fileElement = findCurrentFileDOM();
-  if (fileElement) {
-    const headerElement = fileElement.querySelector<HTMLElement>(
-      '.file-header',
-    )!;
-    const filePath = headerElement.dataset.path!;
-    return files.find((aFile) => aFile.path === filePath);
-  }
-  return null;
-}
 
 type FileType =
   | 'css'
@@ -109,7 +78,7 @@ function activateFileFilter(filter: (file: FileMetadata) => boolean) {
 }
 
 function showFiles(filter: FileFilter) {
-  files.filter(filter).forEach((file) => {
+  githubUI.files.filter(filter).forEach((file) => {
     file.dom.show();
   });
 }
@@ -121,7 +90,7 @@ function deactivateFileFilter(filter: (file: FileMetadata) => boolean) {
 
 function hideFiles() {
   const hiddenFiles = activeFilters.reduce((acc, filter) => {
-    files.filter(filter).forEach((hiddenFile) => acc.add(hiddenFile));
+    githubUI.files.filter(filter).forEach((hiddenFile) => acc.add(hiddenFile));
     return acc;
   }, new Set<FileMetadata>());
 
@@ -130,14 +99,13 @@ function hideFiles() {
   });
 }
 
-filesListener({
-  addedCallback: (newFiles) => {
-    files.push(...newFiles);
+const githubUI = new GithubUI();
+githubUI.initialize();
+githubUI.addFilesListener({
+  addedFiles() {
     hideFiles();
   },
-  clearedCallback: () => {
-    files.length = 0;
-  },
+  cleared() {},
 });
 
 function generateCommands(): Command[] {
@@ -150,13 +118,17 @@ function generateCommands(): Command[] {
           {
             text: `Collapse ${text} files`,
             callback() {
-              files.filter(filter).forEach((file) => file.dom.collapse());
+              githubUI.files
+                .filter(filter)
+                .forEach((file) => file.dom.collapse());
             },
           },
           {
             text: `Expand ${text} files`,
             callback() {
-              files.filter(filter).forEach((file) => file.dom.expand());
+              githubUI.files
+                .filter(filter)
+                .forEach((file) => file.dom.expand());
             },
           },
           {
@@ -170,7 +142,7 @@ function generateCommands(): Command[] {
           {
             text: `Mark ${text} files as viewed`,
             callback() {
-              files.filter(filter).forEach((file) => {
+              githubUI.files.filter(filter).forEach((file) => {
                 file.dom.viewed();
               });
             },
@@ -186,7 +158,7 @@ function generateCommands(): Command[] {
       },
       callback(filterText: string) {
         const regex = new RegExp(filterText);
-        files
+        githubUI.files
           .filter((file) => regex.test(file.path))
           .forEach((file) => file.dom.collapse());
       },
@@ -199,7 +171,7 @@ function generateCommands(): Command[] {
       },
       callback(filterText: string) {
         const regex = new RegExp(filterText);
-        files
+        githubUI.files
           .filter((file) => regex.test(file.path))
           .forEach((file) => file.dom.expand());
       },
@@ -216,7 +188,7 @@ function generateCommands(): Command[] {
           'i',
         );
 
-        files
+        githubUI.files
           .filter((file) => regex.test(file.path))
           .forEach((file) => file.dom.hide());
       },
@@ -229,7 +201,7 @@ function generateCommands(): Command[] {
       },
       callback(filterText: string) {
         const regex = new RegExp(filterText);
-        files
+        githubUI.files
           .filter((file) => regex.test(file.path))
           .forEach((file) => file.dom.show());
       },
@@ -242,7 +214,7 @@ function generateCommands(): Command[] {
       },
       callback(filterText: string) {
         const regex = new RegExp(filterText);
-        files
+        githubUI.files
           .filter((file) => regex.test(file.path))
           .forEach((file) => file.dom.viewed());
       },
@@ -250,7 +222,7 @@ function generateCommands(): Command[] {
     {
       text: 'Collapse all',
       callback() {
-        files.forEach((file) => {
+        githubUI.files.forEach((file) => {
           file.dom.collapse();
         });
       },
@@ -258,35 +230,35 @@ function generateCommands(): Command[] {
     {
       text: 'Expand all',
       callback() {
-        files.forEach((file) => {
+        githubUI.files.forEach((file) => {
           file.dom.expand();
         });
       },
     },
     {
       text: 'Current file: mark as viewed',
-      callback: () => findCurrentFile()?.dom.viewed(),
+      callback: () => githubUI.currentFile?.dom.viewed(),
     },
     {
       text: `Toggle whitespace`,
-      callback: () => toggleWhitespace(),
+      callback: () => githubUI.toggleWhitespace(),
     },
     {
       text: 'Switch to unified diff',
-      callback: () => switchToUnifiedDiff(),
+      callback: () => githubUI.switchToUnifiedDiff(),
     },
     {
       text: 'Switch to split diff',
       callback() {
-        switchToSplitDiff();
+        githubUI.switchToSplitDiff();
       },
     },
-    {text: 'Hide comments', callback: () => hideComments()},
-    {text: 'Show comments', callback: () => showComments()},
+    {text: 'Hide comments', callback: () => githubUI.hideComments()},
+    {text: 'Show comments', callback: () => githubUI.showComments()},
     {
       text: 'Load large diffs',
       callback() {
-        files.filter((file) => file.dom.loadLargeDiff());
+        githubUI.files.filter((file) => file.dom.loadLargeDiff());
       },
     },
   ].sort();
