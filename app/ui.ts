@@ -5,81 +5,22 @@ import {render} from 'react-dom';
 import {createElement} from 'react';
 
 import {Command} from './types';
+import {FileMetadata} from './dom/file';
+import {filesListener} from './dom/files-listener';
+import {
+  hideComments,
+  showComments,
+  switchToSplitDiff,
+  switchToUnifiedDiff,
+  toggleWhitespace,
+} from './dom/utilities';
 
 // Async chunk loading requires a plugin-relative base path.
 // @ts-expect-error
 // eslint-disable-next-line @typescript-eslint/camelcase
 __webpack_public_path__ = chrome.runtime.getURL('');
 
-function isFilesView() {
-  return window.location.pathname.endsWith('/files');
-}
-
-function tabsListener(tabChangeCallback: (isFilesView: boolean) => void) {
-  const tabObserver = new MutationObserver(() => {
-    tabChangeCallback(isFilesView());
-  });
-
-  tabObserver.observe(document.querySelector('main')!, {
-    childList: true,
-    subtree: false,
-  });
-
-  tabChangeCallback(isFilesView());
-}
-
-function filesListener({
-  addedCallback,
-  clearedCallback,
-}: {
-  addedCallback: (files: FileMetadata[]) => void;
-  clearedCallback: () => void;
-}) {
-  const filesObserver = new MutationObserver((mutationsList) => {
-    mutationsList.forEach(({addedNodes}) => {
-      if (addedNodes.length === 0) {
-        // Ignore the loading spinner being removed.
-        return;
-      }
-
-      const addedFiles = Array.from(addedNodes)
-        .filter(
-          (element): element is HTMLElement => element instanceof HTMLElement,
-        )
-        .filter((element) => element.classList?.contains('js-file'));
-
-      const addedInfo = addedFiles.map(fileMetadata);
-      addedCallback(addedInfo);
-    });
-  });
-
-  tabsListener((isFilesView) => {
-    if (isFilesView) {
-      const initialFiles = Array.from(
-        document.querySelectorAll<HTMLElement>('.js-file'),
-      );
-
-      addedCallback(initialFiles.map(fileMetadata));
-
-      const fileContainers = Array.from(
-        document.querySelectorAll('#files .js-diff-progressive-container'),
-      );
-
-      for (const filesContainer of fileContainers) {
-        filesObserver.observe(filesContainer, {
-          attributes: false,
-          characterData: false,
-          characterDataOldValue: false,
-          childList: true,
-          subtree: false,
-        });
-      }
-    } else {
-      clearedCallback();
-      filesObserver.disconnect();
-    }
-  });
-}
+const files: FileMetadata[] = [];
 
 function findCurrentFileDOM() {
   const header = Array.from(
@@ -103,91 +44,6 @@ function findCurrentFile() {
   return null;
 }
 
-interface FileMetadata {
-  id: string;
-  path: string;
-  element: HTMLElement;
-  hasUnloadedDiff: boolean;
-  header: HTMLElement;
-  isDeleted: boolean;
-  isRenamed: boolean;
-  isViewed: boolean;
-  isExpanded: boolean;
-  dom: {
-    collapse(): void;
-    expand(): void;
-    hide(): void;
-    loadLargeDiff(): void;
-    show(): void;
-    viewed(): void;
-  };
-}
-
-function fileMetadata(file: HTMLElement): FileMetadata {
-  const header = file.querySelector<HTMLElement>('.file-header')!;
-  function isExpanded() {
-    return file.classList.contains('open');
-  }
-
-  function isViewed() {
-    return (
-      file.dataset.fileUserViewed !== undefined &&
-      ['true', ''].includes(file.dataset.fileUserViewed)
-    );
-  }
-
-  function largeDiffLoader() {
-    return file.querySelector<HTMLElement>(
-      '.js-diff-load-container [data-hide-on-error] button',
-    );
-  }
-
-  return {
-    id: file.id,
-    element: file,
-    header,
-    path: header.dataset.path!,
-    get hasUnloadedDiff() {
-      return Boolean(largeDiffLoader());
-    },
-    isDeleted: file.dataset.fileDeleted === 'false',
-    isRenamed:
-      file.dataset.renamed !== undefined &&
-      ['true', ''].includes(file.dataset.renamed!),
-    get isExpanded() {
-      return isExpanded();
-    },
-    get isViewed() {
-      return isViewed();
-    },
-    dom: {
-      collapse() {
-        if (isExpanded()) {
-          file.querySelector<HTMLInputElement>('[aria-expanded]')?.click();
-        }
-      },
-      expand() {
-        if (!isExpanded()) {
-          file.querySelector<HTMLInputElement>('[aria-expanded]')?.click();
-        }
-      },
-      hide() {
-        file.dataset.hidden = 'true';
-      },
-      loadLargeDiff() {
-        return largeDiffLoader()?.click();
-      },
-      show() {
-        delete file.dataset.hidden;
-      },
-      viewed() {
-        file.querySelector<HTMLElement>('.js-reviewed-checkbox')?.click();
-      },
-    },
-  };
-}
-
-const files: FileMetadata[] = [];
 type FileType =
   | 'css'
   | 'data'
@@ -283,48 +139,6 @@ filesListener({
     files.length = 0;
   },
 });
-
-function hideComments() {
-  document.body.classList.add('__prs_hide_comments');
-}
-
-function showComments() {
-  document.body.classList.remove('__prs_hide_comments');
-}
-
-function toggleWhitespace() {
-  const [checkbox, submit] = document.querySelectorAll<HTMLInputElement>(
-    '#whitespace-cb, #whitespace-cb ~ button',
-  );
-  checkbox.checked = true;
-  submit.click();
-}
-
-function switchToSplitDiff() {
-  const checkbox = document.querySelector<HTMLInputElement>(
-    'input[type=radio][name=diff][value=split]:not([checked])',
-  );
-  if (checkbox) {
-    checkbox.checked = true;
-    const whitespaceButton = document.querySelector<HTMLElement>(
-      '#whitespace-cb ~ button',
-    );
-    whitespaceButton?.click();
-  }
-}
-
-function switchToUnifiedDiff() {
-  const checkbox = document.querySelector<HTMLInputElement>(
-    'input[type=radio][name=diff][value=unified]:not([checked])',
-  );
-  if (checkbox) {
-    checkbox.checked = true;
-    const whitespaceButton = document.querySelector<HTMLElement>(
-      '#whitespace-cb ~ button',
-    );
-    whitespaceButton?.click();
-  }
-}
 
 function generateCommands(): Command[] {
   return [
