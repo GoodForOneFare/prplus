@@ -22,8 +22,74 @@ const diffType = (function () {
   return (selectedDiffRadio?.value as DiffType) ?? 'split';
 })();
 
-function checkForFilesView() {
+function isFilesView() {
   return window.location.pathname.endsWith('/files');
+}
+
+function tabsListener(tabChangeCallback: (isFilesView: boolean) => void) {
+  const tabObserver = new MutationObserver(() => {
+    tabChangeCallback(isFilesView());
+  });
+
+  tabObserver.observe(document.querySelector('main')!, {
+    childList: true,
+    subtree: false,
+  });
+
+  tabChangeCallback(isFilesView());
+}
+
+function filesListener({
+  addedCallback,
+  clearedCallback,
+}: {
+  addedCallback: (files: FileMetadata[]) => void;
+  clearedCallback: () => void;
+}) {
+  const filesObserver = new MutationObserver((mutationsList) => {
+    mutationsList.forEach(({addedNodes}) => {
+      if (addedNodes.length === 0) {
+        // Ignore the loading spinner being removed.
+        return;
+      }
+
+      const addedFiles = Array.from(addedNodes)
+        .filter(
+          (element): element is HTMLElement => element instanceof HTMLElement,
+        )
+        .filter((element) => element.classList?.contains('js-file'));
+
+      const addedInfo = addedFiles.map(fileMetadata);
+      addedCallback(addedInfo);
+    });
+  });
+
+  tabsListener((isFilesView) => {
+    if (isFilesView) {
+      const initialFiles = Array.from(
+        document.querySelectorAll<HTMLElement>('.js-file'),
+      );
+
+      addedCallback(initialFiles.map(fileMetadata));
+
+      const fileContainers = Array.from(
+        document.querySelectorAll('#files .js-diff-progressive-container'),
+      );
+
+      for (const filesContainer of fileContainers) {
+        filesObserver.observe(filesContainer, {
+          attributes: false,
+          characterData: false,
+          characterDataOldValue: false,
+          childList: true,
+          subtree: false,
+        });
+      }
+    } else {
+      clearedCallback();
+      filesObserver.disconnect();
+    }
+  });
 }
 
 function findCurrentFileDOM() {
@@ -134,46 +200,6 @@ function fileMetadata(file: HTMLElement): FileMetadata {
   };
 }
 
-function filesListener(callback: (files: FileMetadata[]) => void) {
-  const initialFiles = Array.from(
-    document.querySelectorAll<HTMLElement>('.js-file'),
-  );
-
-  callback(initialFiles.map(fileMetadata));
-
-  const filesObserver = new MutationObserver((mutationsList) => {
-    mutationsList.forEach(({addedNodes}) => {
-      if (addedNodes.length === 0) {
-        // Ignore the loading spinner being removed.
-        return;
-      }
-
-      const addedFiles = Array.from(addedNodes)
-        .filter(
-          (element): element is HTMLElement => element instanceof HTMLElement,
-        )
-        .filter((element) => element.classList?.contains('js-file'));
-
-      const addedInfo = addedFiles.map(fileMetadata);
-      callback(addedInfo);
-    });
-  });
-
-  const fileContainers = Array.from(
-    document.querySelectorAll('#files .js-diff-progressive-container'),
-  );
-
-  for (const filesContainer of fileContainers) {
-    filesObserver.observe(filesContainer, {
-      attributes: false,
-      characterData: false,
-      characterDataOldValue: false,
-      childList: true,
-      subtree: false,
-    });
-  }
-}
-
 const files: FileMetadata[] = [];
 type FileType =
   | 'css'
@@ -261,9 +287,14 @@ function hideFiles() {
   });
 }
 
-filesListener((newFiles) => {
-  files.push(...newFiles);
-  hideFiles();
+filesListener({
+  addedCallback: (newFiles) => {
+    files.push(...newFiles);
+    hideFiles();
+  },
+  clearedCallback: () => {
+    files.length = 0;
+  },
 });
 
 const reviewLines = new ReviewLines(diffType, storage);
@@ -482,7 +513,6 @@ function generateCommands(): Command[] {
       render(
         createElement(Container, {
           commands: generateCommands(),
-          isFilesView: checkForFilesView(),
         }),
         container,
       );

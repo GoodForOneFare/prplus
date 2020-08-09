@@ -10,7 +10,6 @@ import {Palette} from '../CommandPalette';
 
 export interface ContainerProps {
   commands: Command[];
-  isFilesView: boolean;
   // reviewLines: ReviewLines;
   // storage: PrStorage;
 }
@@ -24,7 +23,7 @@ export interface ContainerProps {
 //   return null;
 // }
 
-export function Container({commands, isFilesView}: ContainerProps) {
+export function Container({commands}: ContainerProps) {
   const [isVisible, setIsVisible] = useState(false);
   // const [isFilesView, setIsFilesView] = useState(checkForFilesView());
   // const [files, setFiles] = useState([] as FileMetadata[]);
@@ -62,7 +61,6 @@ export function Container({commands, isFilesView}: ContainerProps) {
       <Palette
         commands={commands}
         isVisible={isVisible}
-        isFilesView={isFilesView}
         onReset={() => setIsVisible(false)}
       />
       {/* {filesHTML} */}

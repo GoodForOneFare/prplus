@@ -7,7 +7,6 @@ import {PaletteInput} from './PaletteInput';
 
 export interface Props {
   commands: Command[];
-  isFilesView: boolean;
   isVisible: boolean;
   onReset: () => void;
 }
