@@ -265,7 +265,7 @@ function generateCommands(): Command[] {
 }
 
 (function initializeCommandPalette() {
-  requestAnimationFrame(async () => {
+  requestIdleCallback(async () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
 
@@ -273,7 +273,7 @@ function generateCommands(): Command[] {
       await import(/* webpackChunkName: "react-ui" */ './components')
     ).Container;
 
-    requestAnimationFrame(() => {
+    requestIdleCallback(() => {
       render(
         createElement(Container, {
           commands: generateCommands(),

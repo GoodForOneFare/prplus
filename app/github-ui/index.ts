@@ -20,7 +20,7 @@ export interface FilesListener {
 export type TabType = 'Conversation' | 'Commits' | 'Checks' | 'Files';
 
 export interface TabsListener {
-  tabChanged(tabType: TabType): void;
+  (tabType: TabType): void;
 }
 
 export class GithubUI {
@@ -33,7 +33,7 @@ export class GithubUI {
   initialize() {
     tabsListener(() => {
       const {currentTab} = this;
-      this.tabsListeners.forEach((listener) => listener.tabChanged(currentTab));
+      this.tabsListeners.forEach((listener) => listener(currentTab));
     });
 
     filesListener({
@@ -52,7 +52,7 @@ export class GithubUI {
 
   addTabsListener(listener: TabsListener) {
     this.tabsListeners.push(listener);
-    listener.tabChanged(this.currentTab);
+    listener(this.currentTab);
   }
 
   addFilesListener(listener: FilesListener) {
