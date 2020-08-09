@@ -4,34 +4,12 @@ import 'regenerator-runtime';
 import {render} from 'react-dom';
 import {createElement} from 'react';
 
-import {Command, DiffType} from './types';
-import {ReviewLines} from './ReviewLines';
-import {ReviewLineObserver} from './ReviewLineObserver';
-import {PrStorage} from './PRStorage';
+import {Command} from './types';
 
 // Async chunk loading requires a plugin-relative base path.
 // @ts-expect-error
 // eslint-disable-next-line @typescript-eslint/camelcase
 __webpack_public_path__ = chrome.runtime.getURL('');
-
-const prId = window.location.pathname.replace(/(.+[/]pull[/]\d+).*/, '$1');
-const diffType = (function () {
-  const selectedDiffRadio = document.querySelector<HTMLInputElement>(
-    'input[name=diff][checked]',
-  );
-  return (selectedDiffRadio?.value as DiffType) ?? 'split';
-})();
-
-const storage = new PrStorage(prId);
-
-const reviewLines = new ReviewLines(diffType, storage);
-
-ReviewLineObserver.addBlockSelectionListener(
-  reviewLines.handleReviewedSelection,
-);
-ReviewLineObserver.addSingleLineSelectionListener(
-  reviewLines.handleReviewedSelection,
-);
 
 function isFilesView() {
   return window.location.pathname.endsWith('/files');
