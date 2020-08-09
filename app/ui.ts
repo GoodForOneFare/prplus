@@ -4,10 +4,10 @@ import 'regenerator-runtime';
 import {render} from 'react-dom';
 import {createElement} from 'react';
 
-import {PrStorage} from './PRStorage';
+import {Command, DiffType} from './types';
 import {ReviewLines} from './ReviewLines';
 import {ReviewLineObserver} from './ReviewLineObserver';
-import {Command, DiffType} from './types';
+import {PrStorage} from './PRStorage';
 
 // Async chunk loading requires a plugin-relative base path.
 // @ts-expect-error
@@ -21,6 +21,17 @@ const diffType = (function () {
   );
   return (selectedDiffRadio?.value as DiffType) ?? 'split';
 })();
+
+const storage = new PrStorage(prId);
+
+const reviewLines = new ReviewLines(diffType, storage);
+
+ReviewLineObserver.addBlockSelectionListener(
+  reviewLines.handleReviewedSelection,
+);
+ReviewLineObserver.addSingleLineSelectionListener(
+  reviewLines.handleReviewedSelection,
+);
 
 function isFilesView() {
   return window.location.pathname.endsWith('/files');
@@ -113,8 +124,6 @@ function findCurrentFile() {
   }
   return null;
 }
-
-const storage = new PrStorage(prId);
 
 interface FileMetadata {
   id: string;
@@ -296,15 +305,6 @@ filesListener({
     files.length = 0;
   },
 });
-
-const reviewLines = new ReviewLines(diffType, storage);
-
-ReviewLineObserver.addBlockSelectionListener(
-  reviewLines.handleReviewedSelection,
-);
-ReviewLineObserver.addSingleLineSelectionListener(
-  reviewLines.handleReviewedSelection,
-);
 
 function hideComments() {
   document.body.classList.add('__prs_hide_comments');
