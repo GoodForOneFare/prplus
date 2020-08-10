@@ -1,21 +1,19 @@
 export interface FileMetadata {
-  id: string;
-  path: string;
+  collapse(): void;
+  expand(): void;
+  hide(): void;
+  loadLargeDiff(): void;
+  show(): void;
+  viewed(): void;
   element: HTMLElement;
   hasUnloadedDiff: boolean;
   header: HTMLElement;
+  id: string;
   isDeleted: boolean;
+  isExpanded: boolean;
   isRenamed: boolean;
   isViewed: boolean;
-  isExpanded: boolean;
-  dom: {
-    collapse(): void;
-    expand(): void;
-    hide(): void;
-    loadLargeDiff(): void;
-    show(): void;
-    viewed(): void;
-  };
+  path: string;
 }
 
 export function fileMetadata(file: HTMLElement): FileMetadata {
@@ -55,29 +53,27 @@ export function fileMetadata(file: HTMLElement): FileMetadata {
     get isViewed() {
       return isViewed();
     },
-    dom: {
-      collapse() {
-        if (isExpanded()) {
-          file.querySelector<HTMLInputElement>('[aria-expanded]')?.click();
-        }
-      },
-      expand() {
-        if (!isExpanded()) {
-          file.querySelector<HTMLInputElement>('[aria-expanded]')?.click();
-        }
-      },
-      hide() {
-        file.dataset.hidden = 'true';
-      },
-      loadLargeDiff() {
-        return largeDiffLoader()?.click();
-      },
-      show() {
-        delete file.dataset.hidden;
-      },
-      viewed() {
-        file.querySelector<HTMLElement>('.js-reviewed-checkbox')?.click();
-      },
+    collapse() {
+      if (isExpanded()) {
+        file.querySelector<HTMLInputElement>('[aria-expanded]')?.click();
+      }
+    },
+    expand() {
+      if (!isExpanded()) {
+        file.querySelector<HTMLInputElement>('[aria-expanded]')?.click();
+      }
+    },
+    hide() {
+      file.dataset.hidden = 'true';
+    },
+    loadLargeDiff() {
+      return largeDiffLoader()?.click();
+    },
+    show() {
+      delete file.dataset.hidden;
+    },
+    viewed() {
+      file.querySelector<HTMLElement>('.js-reviewed-checkbox')?.click();
     },
   };
 }

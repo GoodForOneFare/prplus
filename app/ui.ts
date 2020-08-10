@@ -34,7 +34,7 @@ const filterManager: FilterManager = {
 
 function showFiles(filter: FileFilter['filter']) {
   githubUI.files.filter(filter).forEach((file) => {
-    file.dom.show();
+    file.show();
   });
 }
 
@@ -47,7 +47,7 @@ function hideFiles() {
   }, new Set<FileMetadata>());
 
   hiddenFiles.forEach((file) => {
-    file.dom.hide();
+    file.hide();
   });
 }
 

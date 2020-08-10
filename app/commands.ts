@@ -17,7 +17,7 @@ export function generateCommands(
             callback() {
               githubUI.files
                 .filter(filter.filter)
-                .forEach((file) => file.dom.collapse());
+                .forEach((file) => file.collapse());
             },
           },
           {
@@ -25,7 +25,7 @@ export function generateCommands(
             callback() {
               githubUI.files
                 .filter(filter.filter)
-                .forEach((file) => file.dom.expand());
+                .forEach((file) => file.expand());
             },
           },
           {
@@ -40,7 +40,7 @@ export function generateCommands(
             text: `Mark ${text} files as viewed`,
             callback() {
               githubUI.files.filter(filter.filter).forEach((file) => {
-                file.dom.viewed();
+                file.viewed();
               });
             },
           },
@@ -57,7 +57,7 @@ export function generateCommands(
         const regex = new RegExp(filterText);
         githubUI.files
           .filter((file) => regex.test(file.path))
-          .forEach((file) => file.dom.collapse());
+          .forEach((file) => file.collapse());
       },
     },
     {
@@ -70,7 +70,7 @@ export function generateCommands(
         const regex = new RegExp(filterText);
         githubUI.files
           .filter((file) => regex.test(file.path))
-          .forEach((file) => file.dom.expand());
+          .forEach((file) => file.expand());
       },
     },
     {
@@ -87,7 +87,7 @@ export function generateCommands(
 
         githubUI.files
           .filter((file) => regex.test(file.path))
-          .forEach((file) => file.dom.hide());
+          .forEach((file) => file.hide());
       },
     },
     {
@@ -100,7 +100,7 @@ export function generateCommands(
         const regex = new RegExp(filterText);
         githubUI.files
           .filter((file) => regex.test(file.path))
-          .forEach((file) => file.dom.show());
+          .forEach((file) => file.show());
       },
     },
     {
@@ -113,14 +113,14 @@ export function generateCommands(
         const regex = new RegExp(filterText);
         githubUI.files
           .filter((file) => regex.test(file.path))
-          .forEach((file) => file.dom.viewed());
+          .forEach((file) => file.viewed());
       },
     },
     {
       text: 'Collapse all',
       callback() {
         githubUI.files.forEach((file) => {
-          file.dom.collapse();
+          file.collapse();
         });
       },
     },
@@ -128,13 +128,13 @@ export function generateCommands(
       text: 'Expand all',
       callback() {
         githubUI.files.forEach((file) => {
-          file.dom.expand();
+          file.expand();
         });
       },
     },
     {
       text: 'Current file: mark as viewed',
-      callback: () => githubUI.currentFile?.dom.viewed(),
+      callback: () => githubUI.currentFile?.viewed(),
     },
     {
       text: `Toggle whitespace`,
@@ -157,7 +157,7 @@ export function generateCommands(
       callback() {
         githubUI.files
           .filter((file) => !file.isDeleted)
-          .forEach((file) => file.dom.loadLargeDiff());
+          .forEach((file) => file.loadLargeDiff());
       },
     },
   ].sort();
