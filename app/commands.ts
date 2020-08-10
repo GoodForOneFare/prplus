@@ -1,5 +1,6 @@
+import {FilterManager} from './filter-manager';
 import {GithubUI} from './github-ui';
-import {Command, FilterManager, FileType} from './types';
+import {Command, FileType} from './types';
 
 export function generateCommands(
   githubUI: GithubUI,
@@ -30,11 +31,23 @@ export function generateCommands(
           },
           {
             text: `Hide ${text} files`,
-            callback: () => filterManager.activateFilter(key as FileType),
+            callback: () => {
+              filterManager.activateFilter(key as FileType);
+              githubUI.files.forEach((file) => {
+                if (filterManager.isHidden(file)) {
+                  file.hide();
+                }
+              });
+            },
           },
           {
             text: `Show ${text} files`,
-            callback: () => filterManager.deactivateFilter(key as FileType),
+            callback: () => {
+              filterManager.deactivateFilter(key as FileType);
+              filterManager
+                .filesFor(githubUI.files, key as FileType)
+                .forEach((file) => file.show());
+            },
           },
           {
             text: `Mark ${text} files as viewed`,

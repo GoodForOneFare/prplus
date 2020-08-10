@@ -38,12 +38,6 @@ export interface FileFilter {
   text: string | FileFilterName;
 }
 
-export interface FilterManager {
-  readonly allFilters: Record<FileType, FileFilter>;
-  activateFilter(type: FileType): void;
-  deactivateFilter(type: FileType): void;
-}
-
 export type ReviewLineId = string;
 
 export enum ReviewLineSide {
