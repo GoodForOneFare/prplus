@@ -45,7 +45,7 @@ export function fileMetadata(file: HTMLElement): FileMetadata {
     get hasUnloadedDiff() {
       return Boolean(largeDiffLoader());
     },
-    isDeleted: file.dataset.fileDeleted === 'false',
+    isDeleted: file.dataset.fileDeleted === 'true',
     isRenamed:
       file.dataset.renamed !== undefined &&
       ['true', ''].includes(file.dataset.renamed!),
