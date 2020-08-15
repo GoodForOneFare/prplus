@@ -67,7 +67,11 @@ export function generateCommands(
           : '';
       },
       callback(filterText: string) {
-        const regex = new RegExp(filterText);
+        const regex = new RegExp(
+          filterText.replace(/^Collapse (.+)( files)?$/i, '$1'),
+          'i',
+        );
+
         githubUI.files
           .filter((file) => regex.test(file.path))
           .forEach((file) => file.collapse());
@@ -80,7 +84,11 @@ export function generateCommands(
           : '';
       },
       callback(filterText: string) {
-        const regex = new RegExp(filterText);
+        const regex = new RegExp(
+          filterText.replace(/^Expand (.+)( files)?$/i, '$1'),
+          'i',
+        );
+
         githubUI.files
           .filter((file) => regex.test(file.path))
           .forEach((file) => file.expand());
@@ -110,7 +118,11 @@ export function generateCommands(
           : '';
       },
       callback(filterText: string) {
-        const regex = new RegExp(filterText);
+        const regex = new RegExp(
+          filterText.replace(/^Show (.+)( files)?$/i, '$1'),
+          'i',
+        );
+
         githubUI.files
           .filter((file) => regex.test(file.path))
           .forEach((file) => file.show());
@@ -123,7 +135,11 @@ export function generateCommands(
           : '';
       },
       callback(filterText: string) {
-        const regex = new RegExp(filterText);
+        const regex = new RegExp(
+          filterText.replace(/^Mark (.+)( files)?$/i, '$1'),
+          'i',
+        );
+
         githubUI.files
           .filter((file) => regex.test(file.path))
           .forEach((file) => file.viewed());
