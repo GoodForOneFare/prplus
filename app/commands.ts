@@ -189,5 +189,14 @@ export function generateCommands(
           .forEach((file) => file.loadLargeDiff());
       },
     },
+    {
+      text: 'Copy branch name to clipboard',
+      callback() {
+        const branchName = githubUI.branchName;
+        if (branchName) {
+          navigator.clipboard.writeText(branchName);
+        }
+      },
+    },
   ].sort();
 }
