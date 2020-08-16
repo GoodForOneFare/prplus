@@ -73,7 +73,12 @@ export function fileMetadata(file: HTMLElement): FileMetadata {
       delete file.dataset.hidden;
     },
     viewed() {
-      file.querySelector<HTMLElement>('.js-reviewed-checkbox')?.click();
+      const checkbox = file.querySelector<HTMLInputElement>(
+        '.js-reviewed-checkbox',
+      );
+      if (checkbox && !checkbox.checked) {
+        checkbox.click();
+      }
     },
   };
 }
