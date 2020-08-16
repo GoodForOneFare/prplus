@@ -33,11 +33,9 @@ export function generateCommands(
             text: `Hide ${text} files`,
             callback: () => {
               filterManager.activateFilter(key as FileType);
-              githubUI.files.forEach((file) => {
-                if (filterManager.isHidden(file)) {
-                  file.hide();
-                }
-              });
+              filterManager
+                .filesFor(githubUI.files, key as FileType)
+                .forEach((file) => file.hide());
             },
           },
           {
