@@ -1,4 +1,4 @@
-import {FileMetadata} from './file';
+import type {FileMetadata} from './file';
 import {filesListener} from './files-listener';
 import {tabsListener} from './tabs-listener';
 

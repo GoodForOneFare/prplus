@@ -1,4 +1,5 @@
-import {FileMetadata, fileMetadata} from './file';
+import type {FileMetadata} from './file';
+import {fileMetadata} from './file';
 import {tabsListener} from './tabs-listener';
 
 export function filesListener({

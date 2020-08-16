@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 
-import {Command} from '../../types';
+import type {Command} from '../../types';
 
 interface CommandListProps {
   commands: Command[];

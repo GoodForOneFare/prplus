@@ -1,4 +1,4 @@
-import {FileFilter, FileType} from 'app/types';
+import type {FileFilter, FileType} from 'app/types';
 
 export const fileFilters: Record<FileType, FileFilter> = {
   css: {

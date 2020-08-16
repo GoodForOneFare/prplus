@@ -1,3 +1,2 @@
-import {FilesListener, GithubUI, TabsListener, TabType} from './github-ui';
-
-export {FilesListener, GithubUI, TabsListener, TabType};
+export type {FilesListener, TabsListener, TabType} from './github-ui';
+export {GithubUI} from './github-ui';

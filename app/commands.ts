@@ -1,6 +1,6 @@
 import {FilterManager} from './filter-manager';
 import {GithubUI} from './github-ui';
-import {Command, FileType} from './types';
+import type {Command, FileType} from './types';
 
 export function generateCommands(
   githubUI: GithubUI,

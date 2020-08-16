@@ -1,5 +1,5 @@
-import {FileMetadata} from '../github-ui/file';
-import {FileType, FileFilter} from '../types';
+import type {FileMetadata} from '../github-ui/file';
+import type {FileType, FileFilter} from '../types';
 
 import {fileFilters} from './filters';
 

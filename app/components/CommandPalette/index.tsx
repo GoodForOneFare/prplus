@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {Command} from '../../types';
+import type {Command} from '../../types';
 
 import {CommandList} from './CommandList';
 import {PaletteInput} from './PaletteInput';

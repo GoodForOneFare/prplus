@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {Command} from '../../types';
+import type {Command} from '../../types';
 import {Activator} from '../Activator';
 import {Palette} from '../CommandPalette';
 

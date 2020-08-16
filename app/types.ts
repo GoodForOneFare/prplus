@@ -1,4 +1,4 @@
-import {FileMetadata} from './github-ui/file';
+import type {FileMetadata} from './github-ui/file';
 
 export type CommandTextCallback = (filterText: string) => string;
 
