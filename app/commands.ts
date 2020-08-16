@@ -61,7 +61,7 @@ export function generateCommands(
     {
       text(filterText: string) {
         return /^Collapse /i.test(filterText)
-          ? `Collapse ${filterText.replace(/^Collapse /i, '')} files`
+          ? `Collapse /${filterText.replace(/^Collapse /i, '')}/ files`
           : '';
       },
       callback(filterText: string) {
@@ -78,7 +78,7 @@ export function generateCommands(
     {
       text(filterText: string) {
         return /^Expand /i.test(filterText)
-          ? `Expand ${filterText.replace(/^Expand /i, '')} files`
+          ? `Expand /${filterText.replace(/^Expand /i, '')}/ files`
           : '';
       },
       callback(filterText: string) {
@@ -95,7 +95,7 @@ export function generateCommands(
     {
       text(filterText: string) {
         return /^Hide /i.test(filterText)
-          ? `Hide ${filterText.replace(/^Hide /i, '')} files`
+          ? `Hide /${filterText.replace(/^Hide /i, '')}/ files`
           : '';
       },
       callback(filterText: string) {
@@ -112,7 +112,7 @@ export function generateCommands(
     {
       text(filterText: string) {
         return /^Show /i.test(filterText)
-          ? `Show ${filterText.replace(/^Show /i, '')} files`
+          ? `Show /${filterText.replace(/^Show /i, '')}/ files`
           : '';
       },
       callback(filterText: string) {
@@ -129,7 +129,7 @@ export function generateCommands(
     {
       text(filterText: string) {
         return /^Mark /i.test(filterText)
-          ? `Mark ${filterText.replace(/^Mark /i, '')} files as viewed`
+          ? `Mark /${filterText.replace(/^Mark /i, '')}/ files as viewed`
           : '';
       },
       callback(filterText: string) {

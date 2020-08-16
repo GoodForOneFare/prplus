@@ -15,14 +15,19 @@ export function Palette({commands, isVisible, onReset}: Props) {
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
   const [filter, setFilter] = useState('');
 
-  const uppercaseFilter = filter.toUpperCase();
+  const normalizedFilter = filter.toUpperCase().replace(/[|]$/, '');
+  const regex = new RegExp(
+    `(${normalizedFilter.split(/\s/).join(').*(')})`,
+    'i',
+  );
+
   const filteredCommands =
-    uppercaseFilter === ''
+    normalizedFilter === ''
       ? commands
       : commands.filter((command) =>
           typeof command.text === 'string'
-            ? command.text.toUpperCase().includes(uppercaseFilter)
-            : command.text(filter).toUpperCase().includes(uppercaseFilter),
+            ? regex.test(command.text)
+            : regex.test(command.text(normalizedFilter)),
         );
 
   const reset = () => {
