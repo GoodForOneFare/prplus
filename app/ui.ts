@@ -7,6 +7,7 @@ import {createElement} from 'react';
 import {generateCommands} from './commands';
 import {FilterManager} from './filter-manager';
 import {GithubUI} from './github-ui';
+import {Storage} from './storage';
 
 // Async chunk loading requires a plugin-relative base path.
 // @ts-expect-error
@@ -17,14 +18,38 @@ const filterManager = new FilterManager();
 
 const githubUI = new GithubUI();
 githubUI.initialize();
+
+const storage = new Storage(githubUI.prId);
+storage.initialize();
+
 githubUI.addFilesListener({
   addedFiles(files) {
     files
       .filter((file) => filterManager.isHidden(file))
       .forEach((file) => file.hide());
+
+    files.forEach((file) => {
+      file.highlightReviewLines(storage.getReviewedLines(file));
+    });
   },
   cleared() {},
 });
+
+const prId = githubUI.prId;
+if (prId) {
+  if (!localStorage[prId]) {
+    localStorage[prId] = JSON.stringify({});
+  }
+
+  githubUI.addReviewLineListener((file) => {
+    if (file) {
+      const selections = file.getSelectedLines();
+      file.highlightReviewLines(selections);
+      storage.addReviewedLines(file, selections);
+      storage.save();
+    }
+  });
+}
 
 (function initializeCommandPalette() {
   requestIdleCallback(async () => {
@@ -38,7 +63,16 @@ githubUI.addFilesListener({
     requestIdleCallback(() => {
       render(
         createElement(Container, {
-          commands: generateCommands(githubUI, filterManager),
+          commands: generateCommands(
+            githubUI,
+            (file) => {
+              const reviewedLines = storage.getReviewedLines(file);
+              file.clearReviewedLines(reviewedLines);
+              storage.clearReviewLines(file);
+              storage.save();
+            },
+            filterManager,
+          ),
         }),
         container,
       );

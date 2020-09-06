@@ -1,9 +1,11 @@
 import {FilterManager} from './filter-manager';
 import {GithubUI} from './github-ui';
 import type {Command, FileType} from './types';
+import {FileMetadata} from './github-ui/file';
 
 export function generateCommands(
   githubUI: GithubUI,
+  clearReviewLines: (file: FileMetadata) => void,
   filterManager: FilterManager,
 ): Command[] {
   return [
@@ -164,6 +166,15 @@ export function generateCommands(
       callback: () => githubUI.currentFile?.viewed(),
     },
     {
+      text: 'Current file: clear reviewed lines',
+      callback() {
+        const file = githubUI.currentFile;
+        if (file) {
+          clearReviewLines(file);
+        }
+      },
+    },
+    {
       text: `Toggle whitespace`,
       callback: () => githubUI.toggleWhitespace(),
     },
@@ -193,6 +204,15 @@ export function generateCommands(
         const branchName = githubUI.branchName;
         if (branchName) {
           navigator.clipboard.writeText(branchName);
+        }
+      },
+    },
+    {
+      text: 'Copy current file path to clipboard',
+      callback() {
+        const path = githubUI.currentFile?.path;
+        if (path) {
+          navigator.clipboard.writeText(path);
         }
       },
     },
