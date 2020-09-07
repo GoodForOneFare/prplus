@@ -16,16 +16,37 @@ export function filesListener({
         return;
       }
 
-      const addedFiles = Array.from(addedNodes)
-        .filter(
-          (element): element is HTMLElement => element instanceof HTMLElement,
-        )
-        .filter((element) => element.classList?.contains('js-file'));
+      const htmlElements = Array.from(addedNodes).filter(
+        (element): element is HTMLElement => element instanceof HTMLElement,
+      );
+
+      const addedFiles = htmlElements.filter((element) =>
+        element.classList?.contains('js-file'),
+      );
 
       const addedInfo = addedFiles.map(fileMetadata);
       addedCallback(addedInfo);
+
+      // New placeholder containers for files are nested within added nodes.
+      addContainerListener(
+        htmlElements.filter((element) =>
+          element.classList?.contains('js-diff-progressive-container'),
+        ),
+      );
     });
   });
+
+  function addContainerListener(containers: Iterable<HTMLElement>) {
+    for (const filesContainer of containers) {
+      filesObserver.observe(filesContainer, {
+        attributes: false,
+        characterData: false,
+        characterDataOldValue: false,
+        childList: true,
+        subtree: false,
+      });
+    }
+  }
 
   tabsListener((isFilesView) => {
     if (isFilesView) {
@@ -35,19 +56,9 @@ export function filesListener({
 
       addedCallback(initialFiles.map(fileMetadata));
 
-      const fileContainers = Array.from(
+      addContainerListener(
         document.querySelectorAll('#files .js-diff-progressive-container'),
       );
-
-      for (const filesContainer of fileContainers) {
-        filesObserver.observe(filesContainer, {
-          attributes: false,
-          characterData: false,
-          characterDataOldValue: false,
-          childList: true,
-          subtree: false,
-        });
-      }
     } else {
       clearedCallback();
       filesObserver.disconnect();
