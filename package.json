@@ -1,5 +1,6 @@
 {
   "name": "prplus",
+  "description": "A Chrome extension that adds some quality of life features to Github's pull request user interface.",
   "version": "0.9.0",
   "license": "MIT",
   "scripts": {
@@ -30,8 +31,6 @@
   "dependencies": {
     "preact-compat": "^3.19.0",
     "preact": "^10.4.5",
-    "react-dom": "^16.13.1",
-    "react": "^16.13.1",
     "regenerator-runtime": "^0.13.5"
   }
 }
