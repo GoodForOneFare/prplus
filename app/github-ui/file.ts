@@ -50,9 +50,12 @@ export function fileMetadata(file: HTMLElement): FileMetadata {
       return Boolean(largeDiffLoader());
     },
     isDeleted: file.dataset.fileDeleted === 'true',
-    isRenamed:
-      file.dataset.renamed !== undefined &&
-      ['true', ''].includes(file.dataset.renamed!),
+    get isRenamed() {
+      return (
+        file.querySelector<HTMLElement>('.js-file-content')?.innerText ===
+        'File renamed without changes.'
+      );
+    },
     get isExpanded() {
       return isExpanded();
     },
