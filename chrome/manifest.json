@@ -3,17 +3,12 @@
     "version": "1.0",
     "description": "Enhanced Github PR reviews",
     "permissions": ["activeTab", "clipboardWrite", "declarativeContent", "management", "storage"],
-    "background": {
-      "scripts": ["background.js"],
-      "persistent": false
-    },
     "content_scripts": [{
-      "matches": ["https://*.github.com/*"],
+      "matches": ["https://*.github.com/*/pull/*"],
       "js": ["app.js", "react-ui.js"],
       "css": ["app/styles/global.css", "app/styles/palette-styles.css"]
     }],
     "page_action": {
-      "default_popup": "popup.html",
       "default_icon": {
         "16": "images/get_started16.png",
         "32": "images/get_started32.png",

@@ -36,19 +36,7 @@ const config = {
           to: '.',
         },
         {
-          from: path.join(chromeRoot, 'background.js'),
-          to: '.',
-        },
-        {
           from: path.join(chromeRoot, 'manifest.json'),
-          to: '.',
-        },
-        {
-          from: path.join(chromeRoot, 'popup.html'),
-          to: '.',
-        },
-        {
-          from: path.join(chromeRoot, 'popup.js'),
           to: '.',
         },
       ],
