@@ -24,11 +24,14 @@ export function Palette({commands, isVisible, onReset}: Props) {
   const filteredCommands =
     normalizedFilter === ''
       ? commands
-      : commands.filter((command) =>
-          typeof command.text === 'string'
+      : commands.filter((command) => {
+          if (command.match) {
+            return command.match(normalizedFilter);
+          }
+          return typeof command.text === 'string'
             ? regex.test(command.text)
-            : regex.test(command.text(normalizedFilter)),
-        );
+            : regex.test(command.text(normalizedFilter));
+        });
 
   const reset = () => {
     setFilter('');

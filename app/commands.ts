@@ -62,87 +62,77 @@ export function generateCommands(
       .flat(),
     {
       text(filterText: string) {
-        return /^Collapse /i.test(filterText)
-          ? `Collapse /${filterText.replace(/^Collapse /i, '')}/ files`
-          : '';
+        return `Collapse ${regexFilterToText(filterText)} files`;
       },
       callback(filterText: string) {
-        const regex = new RegExp(
-          filterText.replace(/^Collapse (.+)( files)?$/i, '$1'),
-          'i',
-        );
+        const normalizedFilter = extractRegexFromFilter(filterText);
 
         githubUI.files
-          .filter((file) => regex.test(file.path))
+          .filter((file) => file.path.match(normalizedFilter))
           .forEach((file) => file.collapse());
       },
+      match(filterText: string) {
+        return /^CO?L?L?A?P?S?E? ?[/]/i.test(filterText);
+      },
     },
     {
       text(filterText: string) {
-        return /^Expand /i.test(filterText)
-          ? `Expand /${filterText.replace(/^Expand /i, '')}/ files`
-          : '';
+        return `Expand ${regexFilterToText(filterText)} files`;
       },
       callback(filterText: string) {
-        const regex = new RegExp(
-          filterText.replace(/^Expand (.+)( files)?$/i, '$1'),
-          'i',
-        );
+        const normalizedFilter = extractRegexFromFilter(filterText);
 
         githubUI.files
-          .filter((file) => regex.test(file.path))
+          .filter((file) => file.path.match(normalizedFilter))
           .forEach((file) => file.expand());
       },
+      match(filterText: string) {
+        return /^EX?P?A?N?D? ?[/]/i.test(filterText);
+      },
     },
     {
       text(filterText: string) {
-        return /^Hide /i.test(filterText)
-          ? `Hide /${filterText.replace(/^Hide /i, '')}/ files`
-          : '';
+        return `Hide ${regexFilterToText(filterText)} files`;
       },
       callback(filterText: string) {
-        const regex = new RegExp(
-          filterText.replace(/^Hide (.+)( files)?$/i, '$1'),
-          'i',
-        );
+        const normalizedFilter = extractRegexFromFilter(filterText);
 
         githubUI.files
-          .filter((file) => regex.test(file.path))
+          .filter((file) => file.path.match(normalizedFilter))
           .forEach((file) => file.hide());
       },
+      match(filterText: string) {
+        return /^HI?D?E? ?[/]/i.test(filterText);
+      },
     },
     {
       text(filterText: string) {
-        return /^Show /i.test(filterText)
-          ? `Show /${filterText.replace(/^Show /i, '')}/ files`
-          : '';
+        return `Show ${regexFilterToText(filterText)} files`;
       },
       callback(filterText: string) {
-        const regex = new RegExp(
-          filterText.replace(/^Show (.+)( files)?$/i, '$1'),
-          'i',
-        );
+        const normalizedFilter = extractRegexFromFilter(filterText);
 
         githubUI.files
-          .filter((file) => regex.test(file.path))
+          .filter((file) => file.path.match(normalizedFilter))
           .forEach((file) => file.show());
       },
+      match(filterText: string) {
+        return /^SH?O?W? ?[/]/i.test(filterText);
+      },
     },
     {
       text(filterText: string) {
-        return /^Mark /i.test(filterText)
-          ? `Mark /${filterText.replace(/^Mark /i, '')}/ files as viewed`
-          : '';
+        return `Mark ${regexFilterToText(filterText)} files as viewed`;
       },
       callback(filterText: string) {
-        const regex = new RegExp(
-          filterText.replace(/^Mark (.+)( files)?$/i, '$1'),
-          'i',
-        );
+        const normalizedFilter = extractRegexFromFilter(filterText);
 
         githubUI.files
-          .filter((file) => regex.test(file.path))
+          .filter((file) => file.path.match(normalizedFilter))
           .forEach((file) => file.viewed());
+      },
+      match(filterText: string) {
+        return /^MA?R?K? ?[/]/i.test(filterText);
       },
     },
     {
@@ -217,4 +207,14 @@ export function generateCommands(
       },
     },
   ].sort();
+}
+
+function extractRegexFromFilter(filterText: string) {
+  return filterText.replace(/.+?[/](.*)/, '$1').replace(/(.+)[/].+/, '$1');
+}
+
+function regexFilterToText(filterText: string) {
+  const normalizedFilter =
+    extractRegexFromFilter(filterText) || '<regular expression>';
+  return `/${normalizedFilter}/`;
 }

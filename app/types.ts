@@ -5,6 +5,7 @@ export type CommandTextCallback = (filterText: string) => string;
 export interface Command {
   text: string | CommandTextCallback;
   callback(filterText: string): void;
+  match?(filterText: string): boolean;
 }
 
 export enum DiffType {
