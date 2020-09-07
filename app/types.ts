@@ -41,10 +41,4 @@ export interface FileFilter {
 
 export type ReviewLineId = string;
 export type ReviewLine = string;
-
-export enum ReviewLineSide {
-  Left = 'L',
-  Right = 'R',
-}
-
 export type ReviewLines = Record<ReviewLineId, ReviewLine>;

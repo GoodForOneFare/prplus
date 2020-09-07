@@ -9,24 +9,21 @@
       "DOM.Iterable",
       "ESNext"
     ],
+    "module":  "ESNext",
     "moduleResolution": "node",
-    "plugins": [
-      {"name": "typescript-lit-html-plugin"}
-    ],
-    "rootDir": ".",
-    "outDir": "./build/ts",
-    "strict": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "outDir": "./build/ts",
+    "rootDir": ".",
+    "strict": true,
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
-    "target": "ESNext",
-    "module":  "ESNext"
+    "target": "ESNext"
   },
   "include": ["app/**/*.ts"]
 }

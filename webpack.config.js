@@ -2,12 +2,8 @@
 const path = require('path');
 
 const CopyPlugin = require('copy-webpack-plugin');
-const ExtensionReloader = require('webpack-extension-reloader');
 
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const WebpackExtensionManifestPlugin = require('webpack-extension-manifest-plugin');
-
-// const baseManifest = require('./chrome/manifest.json');
+const chromeRoot = path.resolve(__dirname, 'chrome');
 
 const config = {
   mode: 'development',
@@ -29,31 +25,10 @@ const config = {
     extensions: ['.ts', '.tsx', '.js'],
   },
   plugins: [
-    new ExtensionReloader({
-      // manifest: path.resolve(__dirname, 'chrome', 'manifest.json'),
-      entries: {
-        // The entries used for the content/background scripts or extension pages
-        contentScript: 'build/app.js',
-        background: 'build/background.js',
-        extensionPage: 'build/popup.js',
-      },
-    }),
-    // new HtmlWebpackPlugin({
-    //   title: 'boilerplate', // change this to your app title
-    //   meta: {
-    //     charset: 'utf-8',
-    //     viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',
-    //     'theme-color': '#000000',
-    //   },
-    //   manifest: 'manifest.json',
-    //   filename: 'index.html',
-    //   template: './static/index.html',
-    //   hash: true,
-    // }),
     new CopyPlugin({
       patterns: [
         {
-          from: path.join(__dirname, 'chrome', 'images'),
+          from: path.join(chromeRoot, 'images'),
           to: 'images',
         },
         {
@@ -61,28 +36,23 @@ const config = {
           to: '.',
         },
         {
-          from: path.join(__dirname, 'chrome', 'background.js'),
+          from: path.join(chromeRoot, 'background.js'),
           to: '.',
         },
         {
-          from: path.join(__dirname, 'chrome', 'manifest.json'),
+          from: path.join(chromeRoot, 'manifest.json'),
           to: '.',
         },
         {
-          from: path.join(__dirname, 'chrome', 'popup.html'),
+          from: path.join(chromeRoot, 'popup.html'),
           to: '.',
         },
         {
-          from: path.join(__dirname, 'chrome', 'popup.js'),
+          from: path.join(chromeRoot, 'popup.js'),
           to: '.',
         },
       ],
     }),
-    // new WebpackExtensionManifestPlugin({
-    //   config: {
-    //     base: baseManifest,
-    //   },
-    // }),
   ],
   module: {
     rules: [
@@ -93,7 +63,6 @@ const config = {
           {
             loader: 'babel-loader',
             options: {
-              //   envName: mode,
               configFile: false,
               presets: [
                 [
@@ -101,15 +70,11 @@ const config = {
                   {
                     modules: false,
                     typescript: true,
-                    // browsers: 'chrome latest',
                     corejs: 3,
                   },
                 ],
                 '@shopify/babel-preset/react',
               ],
-              //   plugins: [
-              //     refresh === 'fast' && !preact && 'react-refresh/babel',
-              //   ].filter(Boolean),
             },
           },
         ],

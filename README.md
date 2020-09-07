@@ -1,3 +1,4 @@
-TODO: mark moved files with no changes as viewed (https://github.com/Shopify/checkout-web/pull/899/files)
-TODO: mark svgs as viewed (but don't flood the API)
+# PRPlus
 
+PRPlus is a Chrome extension that adds some quality of life features to
+Github's pull request user interface.
