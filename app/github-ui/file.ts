@@ -16,6 +16,7 @@ export interface FileMetadata {
   id: string;
   isDeleted: boolean;
   isExpanded: boolean;
+  isHidden: boolean;
   isRenamed: boolean;
   isViewed: boolean;
   path: string;
@@ -54,6 +55,9 @@ export function fileMetadata(file: HTMLElement): FileMetadata {
       ['true', ''].includes(file.dataset.renamed!),
     get isExpanded() {
       return isExpanded();
+    },
+    get isHidden() {
+      return file.dataset.hidden === 'true';
     },
     get isViewed() {
       return isViewed();

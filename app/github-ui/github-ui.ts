@@ -4,16 +4,6 @@ import type {FileMetadata} from './file';
 import {filesListener} from './files-listener';
 import {tabsListener} from './tabs-listener';
 
-function findCurrentFileDOM() {
-  const header = Array.from(
-    document.querySelectorAll<HTMLElement>(
-      '.js-file:not([data-file-user-viewed]) .file-header',
-    ),
-  ).find((header) => header.getBoundingClientRect().y >= 60);
-
-  return header ? header.closest('.js-file') : null;
-}
-
 export interface FilesListener {
   addedFiles(addedFiles: FileMetadata[]): void;
   cleared(): void;
@@ -121,15 +111,14 @@ export class GithubUI {
   }
 
   get currentFile(): FileMetadata | undefined {
-    const fileElement = findCurrentFileDOM();
-    if (fileElement) {
-      const headerElement = fileElement.querySelector<HTMLElement>(
-        '.file-header',
-      )!;
-      const filePath = headerElement.dataset.path!;
-      return this._files.find((aFile) => aFile.path === filePath);
-    }
-    return undefined;
+    return this.files.find((file) => {
+      if (file) {
+        if (file.isExpanded && !file.isHidden) {
+          return file.header.getBoundingClientRect().y >= 60;
+        }
+      }
+      return false;
+    });
   }
 
   get branchName(): string | undefined {
