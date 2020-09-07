@@ -1,6 +1,3 @@
-/* global __webpack_public_path__:true */
-/* env webextensions */
-import 'regenerator-runtime';
 import {render} from 'react-dom';
 import {createElement} from 'react';
 
@@ -8,11 +5,6 @@ import {generateCommands} from './commands';
 import {FilterManager} from './filter-manager';
 import {GithubUI} from './github-ui';
 import {Storage} from './storage';
-
-// Async chunk loading requires a plugin-relative base path.
-// @ts-expect-error
-// eslint-disable-next-line @typescript-eslint/camelcase
-__webpack_public_path__ = chrome.runtime.getURL('');
 
 const filterManager = new FilterManager();
 
